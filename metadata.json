@@ -1,0 +1,7 @@
+{
+  "name": "Kiran Kumar Dental Hospital",
+  "description": "Expert dental care in Hyderabad. Specializing in painless dentistry, orthodontics, and smile makeovers.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
