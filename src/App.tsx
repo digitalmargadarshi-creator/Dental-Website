@@ -42,32 +42,51 @@ const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void })
     setResponse(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const model = "gemini-3-flash-preview";
+      // Use the platform-provided API key
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error("API Key is not configured");
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
+      // Use gemini-flash-latest for faster and more reliable general Q&A
+      const model = "gemini-flash-latest";
       
       const context = `
-        You are a highly professional dental assistant for Kiran Kumar Dental Hospital in Hyderabad. 
-        Your goal is to help patients with their queries about dental health, services, and booking.
-        Answer concisely and helpfully. Use BOLD for key information like prices, timings, and doctor names.
-        DO NOT use bullet points or '*' characters. Use plain numbering if needed.
+        You are a highly professional and knowledgeable dental assistant for Kiran Kumar Dental Hospital in Hyderabad. 
+        Your goal is to provide expert guidance on dental health, services, and booking.
+        
+        Guidelines:
+        1. Answer concisely and helpfully.
+        2. Use BOLD for key information like prices, timings, and doctor names.
+        3. DO NOT use bullet points or '*' characters. Use plain numbering (1, 2, 3) if needed.
+        4. For medical queries like "yellowish teeth", suggest treatments like Professional Teeth Whitening or Veneers available at our hospital.
+        5. Always maintain a polite, welcoming tone.
         
         Hospital Info:
-        - Lead Dentist: Dr. Kiran (Expert in Painless Dentistry)
-        - Location: Punjagutta, Hyderabad.
-        - Services: Root Canal, Implants, Braces, Whitening, Smile Makeovers.
-        - Timings: Mon-Fri (9AM-8PM), Sat (10AM-6PM).
+        - Lead Dentist: Dr. Kiran (Expert in Painless Dentistry, 15+ years experience)
+        - Location: Punjagutta, Hyderabad (Near Himalaya Bookstore).
+        - Services: Root Canal (Painless), Dental Implants, Braces & Invisalign, Teeth Whitening, Smile Makeovers, Pediatric Dentistry.
+        - Timings: Monday to Friday (9 AM - 8 PM), Saturday (10 AM - 6 PM).
+        - Pricing: Consultation: ₹300-500 | Whitening: ₹5000-8000 | Root Canal: ₹4000-8000 | Implants: ₹25,000+.
         - Contact: ${CONTACT_INFO.phone}
       `;
 
       const result = await ai.models.generateContent({
         model,
-        contents: `${context}\n\nUser (${userName}) Question: ${query}`,
+        contents: [{ role: 'user', parts: [{ text: `${context}\n\nUser (${userName}) Question: ${query}` }] }],
       });
 
-      setResponse(result.text || "I'm here to help! Please contact us for more details.");
+      const text = result.text;
+      if (!text) {
+        throw new Error("Empty response from AI");
+      }
+
+      setResponse(text);
     } catch (error) {
-      console.error("AI Error:", error);
-      setResponse("I'm having trouble connecting to the desk. Please call us directly for immediate help!");
+      console.error("AI Assistant Error:", error);
+      // Fallback response that is still helpful
+      setResponse(`I'm sorry ${userName}, I'm having a bit of trouble connecting to our clinical database right now. However, for concerns like "${query}", Dr. Kiran usually recommends a quick consultation. Would you like to chat with us on WhatsApp or call our Punjagutta clinic directly?`);
     } finally {
       setIsLoading(false);
     }
@@ -277,8 +296,11 @@ const MasterFAQPage = () => {
     setAiResponse(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const model = "gemini-3-flash-preview";
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) throw new Error("API Key missing");
+      
+      const ai = new GoogleGenAI({ apiKey });
+      const model = "gemini-flash-latest";
       
       const context = `
         You are the virtual receptionist for Kiran Kumar Dental Hospital in Hyderabad.
@@ -300,7 +322,7 @@ const MasterFAQPage = () => {
 
       const response = await ai.models.generateContent({
         model,
-        contents: `${context}\n\nUser Question: ${searchQuery}`,
+        contents: [{ role: 'user', parts: [{ text: `${context}\n\nUser Question: ${searchQuery}` }] }],
       });
 
       setAiResponse(response.text || "I'm sorry, I couldn't find an answer to that. Please contact our front desk.");
