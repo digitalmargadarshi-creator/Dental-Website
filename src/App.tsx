@@ -15,9 +15,364 @@ import {
   Instagram,
   ShieldCheck
 } from 'lucide-react';
-import { SERVICES, REVIEWS, INSTAGRAM_REELS, CONTACT_INFO } from './constants';
+import { SERVICES, REVIEWS, INSTAGRAM_REELS, CONTACT_INFO, PAGE_FAQS, MASTER_FAQS } from './constants';
+import { GoogleGenAI } from "@google/genai";
+import ReactMarkdown from 'react-markdown';
 
 // --- Components ---
+
+const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [response, setResponse] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsOpen(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleAsk = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+
+    setIsLoading(true);
+    setResponse(null);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const model = "gemini-3-flash-preview";
+      
+      const context = `
+        You are a helpful dental assistant for Kiran Kumar Dental Hospital. 
+        Answer concisely. Use BOLD for key info. DO NOT use bullet points or '*' characters.
+        Hospital Info: Dr. Kiran, Punjagutta Hyderabad, Painless Dentistry.
+        Contact: ${CONTACT_INFO.phone}, WhatsApp: ${CONTACT_INFO.whatsapp}
+      `;
+
+      const result = await ai.models.generateContent({
+        model,
+        contents: `${context}\n\nUser Question: ${query}`,
+      });
+
+      setResponse(result.text || "I'm here to help! Please contact us for more details.");
+    } catch (error) {
+      setResponse("I'm having trouble connecting. Please call us!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.9, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      className="fixed bottom-28 right-8 z-[100] w-[350px] bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden"
+    >
+      <div className="bg-primary p-6 text-white flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <MessageCircle size={20} />
+          </div>
+          <div>
+            <p className="font-bold text-sm">Assistant</p>
+            <p className="text-[10px] opacity-80">How can I help you today?</p>
+          </div>
+        </div>
+        <button onClick={() => setIsOpen(false)} className="hover:bg-white/10 p-1 rounded-full">
+          <X size={20} />
+        </button>
+      </div>
+      
+      <div className="p-6 max-h-[400px] overflow-y-auto">
+        {!response && !isLoading && (
+          <p className="text-slate-600 text-sm mb-4">Hello! Ask me anything about our dental services or booking.</p>
+        )}
+        
+        {isLoading && (
+          <div className="flex justify-center py-4">
+            <div className="animate-pulse text-primary font-bold">Thinking...</div>
+          </div>
+        )}
+
+        {response && (
+          <div className="space-y-4">
+            <div className="text-slate-700 text-sm leading-relaxed prose prose-sm max-w-none">
+              <ReactMarkdown>{response}</ReactMarkdown>
+            </div>
+            <div className="pt-4 border-t border-slate-100">
+              <p className="text-[10px] font-bold text-slate-400 uppercase mb-3">Connect with us</p>
+              <div className="flex gap-2">
+                <a 
+                  href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(`Hi, I was asking: "${query}". My name is [Your Name].`)}`}
+                  className="flex-1 bg-emerald-500 text-white py-2 rounded-lg text-xs font-bold text-center hover:bg-emerald-600 transition-colors"
+                >
+                  WhatsApp
+                </a>
+                <a 
+                  href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`}
+                  className="flex-1 bg-primary text-white py-2 rounded-lg text-xs font-bold text-center hover:bg-secondary transition-colors"
+                >
+                  Call Now
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={handleAsk} className="mt-4 flex gap-2">
+          <input 
+            type="text" 
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Type your question..."
+            className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+          <button type="submit" className="bg-primary text-white p-2 rounded-xl hover:bg-secondary transition-colors">
+            <Send size={18} />
+          </button>
+        </form>
+      </div>
+    </motion.div>
+  );
+};
+
+const FAQSection = ({ faqs, setActivePage }: { faqs: { q: string, a: string }[], setActivePage: (p: string) => void }) => {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <section className="py-24 bg-slate-50">
+      <div className="max-w-3xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+          <p className="text-slate-600">Find answers to common questions about our services and care.</p>
+        </div>
+        <div className="space-y-4">
+          {faqs.map((faq, idx) => (
+            <div key={idx} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <button 
+                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-slate-50 transition-colors"
+                onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+              >
+                <span className="font-bold text-slate-900">{faq.q}</span>
+                <ChevronRight size={18} className={`text-slate-400 transition-transform ${openIndex === idx ? 'rotate-90' : ''}`} />
+              </button>
+              <AnimatePresence>
+                {openIndex === idx && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-6 pb-4 text-slate-600 leading-relaxed">
+                      {faq.a}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+        <div className="mt-12 text-center">
+          <button 
+            onClick={() => {
+              setActivePage('faq');
+              window.scrollTo(0, 0);
+            }}
+            className="inline-flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all"
+          >
+            Know More A-Z FAQs <ChevronRight size={20} />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const MasterFAQPage = () => {
+  const [openIndices, setOpenIndices] = useState<Record<string, number | null>>({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const toggle = (category: string, idx: number) => {
+    setOpenIndices(prev => ({
+      ...prev,
+      [category]: prev[category] === idx ? null : idx
+    }));
+  };
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    setIsSearching(true);
+    setAiResponse(null);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const model = "gemini-3-flash-preview";
+      
+      const context = `
+        You are the virtual receptionist for Kiran Kumar Dental Hospital in Hyderabad.
+        Answer the user's query politely and professionally. 
+        Use BOLD for key information. 
+        DO NOT use bullet points or '*' characters in your response. 
+        If you list items, use plain numbers or just separate them with new lines.
+        
+        Hospital Info:
+        - Lead Dentist: Dr. Kiran (15+ years experience)
+        - Location: Punjagutta, Hyderabad (Near Himalaya Bookstore)
+        - Services: General Dentistry, Orthodontics, Cosmetic Dentistry, Emergency Care, Pediatric Dentistry, Oral Surgery.
+        - Timings: Mon-Fri: 9 AM - 8 PM | Sat: 10 AM - 6 PM | Sun: Closed (Emergency only).
+        - Pricing: Consultation: ₹300-500 | Cleanings: ₹1000-2500 | Root Canal: ₹4000-8000 | Implants: ₹25,000+.
+        - Speciality: Painless Dentistry.
+        - Contact: ${CONTACT_INFO.phone}, WhatsApp: ${CONTACT_INFO.whatsapp}
+        - Address: ${CONTACT_INFO.address}
+      `;
+
+      const response = await ai.models.generateContent({
+        model,
+        contents: `${context}\n\nUser Question: ${searchQuery}`,
+      });
+
+      setAiResponse(response.text || "I'm sorry, I couldn't find an answer to that. Please contact our front desk.");
+    } catch (error) {
+      console.error("AI Search Error:", error);
+      setAiResponse("I'm having a bit of trouble connecting to the desk. Please call us directly for immediate assistance.");
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-24">
+      <div className="text-center mb-12">
+        <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto mb-6">
+          <MessageCircle size={40} />
+        </div>
+        <h2 className="text-4xl md:text-5xl font-bold mb-6">Master FAQ Desk</h2>
+        <p className="text-slate-600 text-lg max-w-2xl mx-auto">
+          Hello! I'm your virtual receptionist. I'm here to answer everything from A to Z about our hospital, services, timings, and more.
+        </p>
+      </div>
+
+      {/* AI Search Bar */}
+      <div className="mb-20">
+        <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto">
+          <input 
+            type="text" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Ask me anything about the business... (e.g. 'What are your root canal prices?')"
+            className="w-full px-8 py-5 rounded-2xl border-2 border-primary/20 focus:border-primary focus:outline-none text-lg shadow-lg transition-all pr-32"
+          />
+          <button 
+            type="submit"
+            disabled={isSearching}
+            className="absolute right-2 top-2 bottom-2 bg-primary text-white px-6 rounded-xl font-bold hover:bg-secondary transition-all disabled:opacity-50 flex items-center gap-2"
+          >
+            {isSearching ? 'Thinking...' : 'Ask Me'}
+          </button>
+        </form>
+
+        <AnimatePresence>
+          {aiResponse && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-8 bg-white rounded-[2rem] p-8 border border-primary/10 shadow-xl relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-1 bg-primary h-full" />
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary shrink-0 mt-1">
+                  <MessageCircle size={20} />
+                </div>
+                <div className="space-y-6 w-full">
+                  <div className="text-slate-700 text-lg leading-relaxed prose prose-slate max-w-none">
+                    <ReactMarkdown>{aiResponse}</ReactMarkdown>
+                  </div>
+                  
+                  <div className="pt-6 border-t border-slate-100">
+                    <p className="font-bold text-slate-900 mb-4">Still have questions?</p>
+                    <div className="flex flex-wrap gap-4">
+                      <a 
+                        href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`} 
+                        className="bg-primary text-white px-6 py-3 rounded-full font-bold hover:bg-secondary transition-colors flex items-center gap-2 text-sm shadow-lg shadow-primary/20"
+                      >
+                        <Phone size={16} /> Call Hospital
+                      </a>
+                      <a 
+                        href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(`Hi, I was asking about: "${searchQuery}". I still have some questions.`)}`} 
+                        className="bg-emerald-500 text-white px-6 py-3 rounded-full font-bold hover:bg-emerald-600 transition-colors flex items-center gap-2 text-sm shadow-lg shadow-emerald-500/20"
+                      >
+                        <MessageCircle size={16} /> Chat on WhatsApp
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="space-y-16">
+        {MASTER_FAQS.map((cat, catIdx) => (
+          <div key={catIdx}>
+            <h3 className="text-2xl font-bold mb-8 flex items-center gap-3">
+              <div className="w-2 h-8 bg-primary rounded-full" />
+              {cat.category}
+            </h3>
+            <div className="space-y-4">
+              {cat.items.map((faq, idx) => (
+                <div key={idx} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                  <button 
+                    className="w-full px-8 py-6 text-left flex items-center justify-between hover:bg-slate-50 transition-colors"
+                    onClick={() => toggle(cat.category, idx)}
+                  >
+                    <span className="font-bold text-lg text-slate-900">{faq.q}</span>
+                    <ChevronRight size={20} className={`text-slate-400 transition-transform ${openIndices[cat.category] === idx ? 'rotate-90' : ''}`} />
+                  </button>
+                  <AnimatePresence>
+                    {openIndices[cat.category] === idx && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-8 pb-6 text-slate-600 leading-relaxed text-lg border-t border-slate-50 pt-4">
+                          {faq.a}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-24 bg-primary rounded-[3rem] p-12 text-center text-white">
+        <h3 className="text-3xl font-bold mb-4">Still have questions?</h3>
+        <p className="text-white/80 mb-8 max-w-xl mx-auto">Our team is ready to help you with any specific queries you might have. Feel free to reach out directly.</p>
+        <div className="flex flex-wrap justify-center gap-4">
+          <a href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`} className="bg-white text-primary px-8 py-4 rounded-full font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
+            <Phone size={20} /> Call Now
+          </a>
+          <a href={`https://wa.me/${CONTACT_INFO.whatsapp}`} className="bg-emerald-500 text-white px-8 py-4 rounded-full font-bold hover:bg-emerald-600 transition-colors flex items-center gap-2">
+            <MessageCircle size={20} /> WhatsApp Us
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Header = ({ activePage, setActivePage }: { activePage: string, setActivePage: (p: string) => void }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,7 +382,8 @@ const Header = ({ activePage, setActivePage }: { activePage: string, setActivePa
     { id: 'about', label: 'About Us' },
     { id: 'services', label: 'Services' },
     { id: 'testimonials', label: 'Testimonials' },
-    { id: 'contact', label: 'Contact' }
+    { id: 'contact', label: 'Contact' },
+    { id: 'faq', label: 'FAQ' }
   ];
 
   return (
@@ -315,7 +671,7 @@ const Footer = ({ setActivePage }: { setActivePage: (p: string) => void }) => {
         <div>
           <h3 className="text-white font-bold mb-6">Quick Links</h3>
           <ul className="space-y-4 text-sm">
-            {['Home', 'About Us', 'Services', 'Testimonials', 'Contact'].map(item => (
+            {['Home', 'About Us', 'Services', 'Testimonials', 'Contact', 'FAQ'].map(item => (
               <li key={item}>
                 <button 
                   onClick={() => setActivePage(item.toLowerCase().replace(' ', ''))}
@@ -447,19 +803,31 @@ const HomePage = ({ setActivePage }: { setActivePage: (p: string) => void }) => 
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
               viewport={{ once: true }}
-              className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group"
+              className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all group overflow-hidden flex flex-col h-full"
             >
-              <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-all">
-                <service.icon size={28} />
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src={(service as any).image} 
+                  alt={service.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute bottom-4 left-4 w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center text-primary shadow-lg transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                  <service.icon size={24} />
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-              <p className="text-slate-600 text-sm leading-relaxed mb-6">{service.description}</p>
-              <button 
-                onClick={() => setActivePage('services')}
-                className="text-primary font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all"
-              >
-                Learn More <ChevronRight size={16} />
-              </button>
+              
+              <div className="p-8 flex flex-col flex-grow">
+                <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-8 flex-grow">{service.description}</p>
+                <button 
+                  onClick={() => setActivePage('services')}
+                  className="w-full py-3 rounded-xl border border-slate-200 text-slate-900 font-bold text-sm flex items-center justify-center gap-2 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all"
+                >
+                  Learn More <ChevronRight size={16} />
+                </button>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -481,6 +849,9 @@ const HomePage = ({ setActivePage }: { setActivePage: (p: string) => void }) => 
         </div>
         <ReviewCarousel />
       </section>
+
+      {/* FAQ Section */}
+      <FAQSection faqs={PAGE_FAQS.home} setActivePage={setActivePage} />
 
       {/* CTA Section */}
       <section className="max-w-7xl mx-auto px-4">
@@ -505,7 +876,7 @@ const HomePage = ({ setActivePage }: { setActivePage: (p: string) => void }) => 
   );
 };
 
-const AboutPage = () => {
+const AboutPage = ({ setActivePage }: { setActivePage: (p: string) => void }) => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 md:py-24 space-y-16 md:space-y-24">
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -565,13 +936,15 @@ const AboutPage = () => {
           </div>
         </div>
       </section>
+
+      <FAQSection faqs={PAGE_FAQS.about} setActivePage={setActivePage} />
     </div>
   );
 };
 
-const ServicesPage = () => {
+const ServicesPage = ({ setActivePage }: { setActivePage: (p: string) => void }) => {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-24">
+    <div className="max-w-7xl mx-auto px-4 py-24 space-y-24">
       <div className="text-center max-w-3xl mx-auto mb-20">
         <h2 className="text-4xl md:text-5xl font-bold mb-6">Our Comprehensive Services</h2>
         <p className="text-slate-600 text-lg">We offer a wide range of dental treatments using advanced technology to ensure the best results for your oral health.</p>
@@ -611,13 +984,15 @@ const ServicesPage = () => {
           </div>
         ))}
       </div>
+
+      <FAQSection faqs={PAGE_FAQS.services} setActivePage={setActivePage} />
     </div>
   );
 };
 
-const TestimonialsPage = () => {
+const TestimonialsPage = ({ setActivePage }: { setActivePage: (p: string) => void }) => {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-24">
+    <div className="max-w-7xl mx-auto px-4 py-24 space-y-24">
       <div className="text-center max-w-3xl mx-auto mb-20">
         <h2 className="text-4xl md:text-5xl font-bold mb-6">Patient Stories</h2>
         <p className="text-slate-600 text-lg">Watch how we've helped our patients achieve their dream smiles. Real results, real people.</p>
@@ -649,13 +1024,15 @@ const TestimonialsPage = () => {
           ))}
         </div>
       </div>
+
+      <FAQSection faqs={PAGE_FAQS.testimonials} setActivePage={setActivePage} />
     </div>
   );
 };
 
-const ContactPage = () => {
+const ContactPage = ({ setActivePage }: { setActivePage: (p: string) => void }) => {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-24">
+    <div className="max-w-7xl mx-auto px-4 py-24 space-y-24">
       <div className="text-center max-w-3xl mx-auto mb-20">
         <h2 className="text-4xl md:text-5xl font-bold mb-6">Get In Touch</h2>
         <p className="text-slate-600 text-lg">Have questions or ready to book your appointment? We're here to help you smile better.</p>
@@ -710,6 +1087,8 @@ const ContactPage = () => {
           <ContactForm />
         </div>
       </div>
+
+      <FAQSection faqs={PAGE_FAQS.contact} setActivePage={setActivePage} />
     </div>
   );
 };
@@ -737,15 +1116,18 @@ export default function App() {
             transition={{ duration: 0.3 }}
           >
             {activePage === 'home' && <HomePage setActivePage={setActivePage} />}
-            {activePage === 'about' && <AboutPage />}
-            {activePage === 'services' && <ServicesPage />}
-            {activePage === 'testimonials' && <TestimonialsPage />}
-            {activePage === 'contact' && <ContactPage />}
+            {activePage === 'about' && <AboutPage setActivePage={setActivePage} />}
+            {activePage === 'services' && <ServicesPage setActivePage={setActivePage} />}
+            {activePage === 'testimonials' && <TestimonialsPage setActivePage={setActivePage} />}
+            {activePage === 'contact' && <ContactPage setActivePage={setActivePage} />}
+            {activePage === 'faq' && <MasterFAQPage />}
           </motion.div>
         </AnimatePresence>
       </main>
 
       <Footer setActivePage={setActivePage} />
+
+      <WelcomePopup setActivePage={setActivePage} />
 
       {/* WhatsApp Floating Button */}
       <a 
