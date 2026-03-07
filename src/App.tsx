@@ -23,12 +23,14 @@ import ReactMarkdown from 'react-markdown';
 
 const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [userName, setUserName] = useState('');
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState<'name' | 'chat'>('name');
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsOpen(true), 2000);
+    const timer = setTimeout(() => setIsOpen(true), 3000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -44,20 +46,28 @@ const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void })
       const model = "gemini-3-flash-preview";
       
       const context = `
-        You are a helpful dental assistant for Kiran Kumar Dental Hospital. 
-        Answer concisely. Use BOLD for key info. DO NOT use bullet points or '*' characters.
-        Hospital Info: Dr. Kiran, Punjagutta Hyderabad, Painless Dentistry.
-        Contact: ${CONTACT_INFO.phone}, WhatsApp: ${CONTACT_INFO.whatsapp}
+        You are a highly professional dental assistant for Kiran Kumar Dental Hospital in Hyderabad. 
+        Your goal is to help patients with their queries about dental health, services, and booking.
+        Answer concisely and helpfully. Use BOLD for key information like prices, timings, and doctor names.
+        DO NOT use bullet points or '*' characters. Use plain numbering if needed.
+        
+        Hospital Info:
+        - Lead Dentist: Dr. Kiran (Expert in Painless Dentistry)
+        - Location: Punjagutta, Hyderabad.
+        - Services: Root Canal, Implants, Braces, Whitening, Smile Makeovers.
+        - Timings: Mon-Fri (9AM-8PM), Sat (10AM-6PM).
+        - Contact: ${CONTACT_INFO.phone}
       `;
 
       const result = await ai.models.generateContent({
         model,
-        contents: `${context}\n\nUser Question: ${query}`,
+        contents: `${context}\n\nUser (${userName}) Question: ${query}`,
       });
 
       setResponse(result.text || "I'm here to help! Please contact us for more details.");
     } catch (error) {
-      setResponse("I'm having trouble connecting. Please call us!");
+      console.error("AI Error:", error);
+      setResponse("I'm having trouble connecting to the desk. Please call us directly for immediate help!");
     } finally {
       setIsLoading(false);
     }
@@ -67,74 +77,128 @@ const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void })
 
   return (
     <motion.div 
-      initial={{ opacity: 0, scale: 0.9, y: 20 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="fixed bottom-28 right-8 z-[100] w-[350px] bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden"
+      initial={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+      className="fixed bottom-24 right-6 z-[100] w-[380px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col"
+      style={{ maxHeight: '80vh' }}
     >
-      <div className="bg-primary p-6 text-white flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-            <MessageCircle size={20} />
+      <div className="bg-primary p-6 text-white shrink-0">
+        <div className="flex justify-between items-start mb-4">
+          <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
+            <MessageCircle size={24} />
           </div>
-          <div>
-            <p className="font-bold text-sm">Assistant</p>
-            <p className="text-[10px] opacity-80">How can I help you today?</p>
-          </div>
+          <button onClick={() => setIsOpen(false)} className="hover:bg-white/10 p-2 rounded-full transition-colors">
+            <X size={20} />
+          </button>
         </div>
-        <button onClick={() => setIsOpen(false)} className="hover:bg-white/10 p-1 rounded-full">
-          <X size={20} />
-        </button>
+        <div>
+          <h3 className="font-bold text-lg">Kiran Kumar Assistant</h3>
+          <p className="text-xs opacity-80">Online | Expert Dental Guidance</p>
+        </div>
       </div>
       
-      <div className="p-6 max-h-[400px] overflow-y-auto">
-        {!response && !isLoading && (
-          <p className="text-slate-600 text-sm mb-4">Hello! Ask me anything about our dental services or booking.</p>
-        )}
-        
-        {isLoading && (
-          <div className="flex justify-center py-4">
-            <div className="animate-pulse text-primary font-bold">Thinking...</div>
-          </div>
-        )}
-
-        {response && (
+      <div className="flex-grow overflow-y-auto p-6 space-y-4">
+        {step === 'name' ? (
           <div className="space-y-4">
-            <div className="text-slate-700 text-sm leading-relaxed prose prose-sm max-w-none">
-              <ReactMarkdown>{response}</ReactMarkdown>
-            </div>
-            <div className="pt-4 border-t border-slate-100">
-              <p className="text-[10px] font-bold text-slate-400 uppercase mb-3">Connect with us</p>
-              <div className="flex gap-2">
-                <a 
-                  href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(`Hi, I was asking: "${query}". My name is [Your Name].`)}`}
-                  className="flex-1 bg-emerald-500 text-white py-2 rounded-lg text-xs font-bold text-center hover:bg-emerald-600 transition-colors"
-                >
-                  WhatsApp
-                </a>
-                <a 
-                  href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`}
-                  className="flex-1 bg-primary text-white py-2 rounded-lg text-xs font-bold text-center hover:bg-secondary transition-colors"
-                >
-                  Call Now
-                </a>
-              </div>
-            </div>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              Hello! I'm your virtual assistant. To provide you with personalized help, may I know your name?
+            </p>
+            <form onSubmit={(e) => { e.preventDefault(); if(userName.trim()) setStep('chat'); }} className="space-y-3">
+              <input 
+                type="text" 
+                required
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Enter your name..."
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              />
+              <button type="submit" className="w-full bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:bg-secondary transition-all shadow-lg shadow-primary/20">
+                Start Chatting
+              </button>
+            </form>
           </div>
-        )}
+        ) : (
+          <>
+            <div className="bg-slate-100 rounded-2xl rounded-tl-none p-4 text-sm text-slate-700 max-w-[85%]">
+              Hi <strong>{userName}</strong>! How can I help you with your dental care today?
+            </div>
 
-        <form onSubmit={handleAsk} className="mt-4 flex gap-2">
-          <input 
-            type="text" 
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Type your question..."
-            className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-          />
-          <button type="submit" className="bg-primary text-white p-2 rounded-xl hover:bg-secondary transition-colors">
-            <Send size={18} />
-          </button>
-        </form>
+            {query && (
+              <div className="bg-primary/10 rounded-2xl rounded-tr-none p-4 text-sm text-slate-900 max-w-[85%] ml-auto">
+                {query}
+              </div>
+            )}
+
+            {isLoading && (
+              <div className="flex gap-2 items-center text-primary text-xs font-bold animate-pulse">
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.2s]" />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.4s]" />
+                Assistant is typing...
+              </div>
+            )}
+
+            {response && (
+              <div className="space-y-4">
+                <div className="bg-slate-100 rounded-2xl rounded-tl-none p-4 text-sm text-slate-700 leading-relaxed prose prose-sm max-w-none">
+                  <ReactMarkdown>{response}</ReactMarkdown>
+                </div>
+                
+                <div className="bg-primary rounded-2xl p-6 text-white shadow-xl shadow-primary/20">
+                  <p className="text-xs font-bold uppercase mb-4 tracking-wider opacity-90 text-center">Final Step: Send to Hospital</p>
+                  <a 
+                    href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(`Hi, I am ${userName}. \n\nMy Question: "${query}" \n\nAssistant Answered: "${response.substring(0, 300)}..."`)}`}
+                    target="_blank"
+                    className="w-full bg-white text-primary py-4 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-3 shadow-lg"
+                  >
+                    <MessageCircle size={20} className="text-emerald-500" /> 
+                    Send Question to WhatsApp
+                  </a>
+                  <p className="text-[10px] mt-4 text-center opacity-70">
+                    Clicking above will send your query and the assistant's answer to our team for immediate follow-up.
+                  </p>
+                </div>
+
+                <div className="flex gap-2">
+                  <a 
+                    href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`}
+                    className="flex-1 border border-slate-200 text-slate-600 py-3 rounded-xl text-xs font-bold text-center hover:bg-slate-50 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Phone size={14} /> Call Instead
+                  </a>
+                  <button 
+                    onClick={() => { setResponse(null); setQuery(''); }}
+                    className="flex-1 border border-slate-200 text-slate-600 py-3 rounded-xl text-xs font-bold text-center hover:bg-slate-50 transition-colors"
+                  >
+                    Ask Another
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
+
+      {step === 'chat' && (
+        <div className="p-4 border-t border-slate-100 bg-slate-50 shrink-0">
+          <form onSubmit={handleAsk} className="flex gap-2">
+            <input 
+              type="text" 
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Ask about services, prices..."
+              className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+            <button 
+              type="submit" 
+              disabled={isLoading || !query.trim()}
+              className="bg-primary text-white p-2.5 rounded-xl hover:bg-secondary transition-colors disabled:opacity-50"
+            >
+              <Send size={18} />
+            </button>
+          </form>
+        </div>
+      )}
     </motion.div>
   );
 };
