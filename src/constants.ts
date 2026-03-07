@@ -48,73 +48,63 @@ export const SERVICES = [
 export const REVIEWS = [
   {
     id: 1,
-    name: "Suresh Kumar",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-    content: "Excellent experience! The staff is very friendly and the treatment was completely painless. Highly recommended.",
-    link: "https://maps.app.goo.gl/BtQ92mZ1zJWHDmESA"
+    name: "CLIFFORD SHUTTLEWORTH",
+    avatar: "https://ui-avatars.com/api/?name=Clifford+Shuttleworth&background=db2777&color=fff",
+    content: "Very happy with service and attention. The whole process went smoothly in a happy atmosphere, and Dr. Kiran was very professional throughout. I would highly recommend this clinic for anyone looking for painless dental care. The staff is also very supportive.",
+    date: "4 days ago",
+    rating: 5,
+    link: "https://maps.app.goo.gl/BtQ92mZ1zJWHDmESA",
+    ownerReply: "Thank you Clifford for your kind words! We are glad you had a smooth experience with us. Our team always strives to provide a comfortable environment for our patients."
   },
   {
     id: 2,
-    name: "Anitha Reddy",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-    content: "Very affordable prices for high-quality dental work. Dr. Kiran is very professional and caring.",
-    link: "https://maps.app.goo.gl/DCXcic1c3ob1AtUM6"
+    name: "Gerard Ainsworth",
+    avatar: "https://ui-avatars.com/api/?name=Gerard+Ainsworth&background=7c3aed&color=fff",
+    content: "Absolutely brilliant! Great friendly service. Took the time to explain things and go through all the options. The treatment was painless and the results are fantastic. Best dentist in Hyderabad. I've visited many clinics but this one stands out for its hygiene and expertise.",
+    date: "1 month ago",
+    rating: 5,
+    link: "https://maps.app.goo.gl/DCXcic1c3ob1AtUM6",
+    ownerReply: "Hello Gerard, thank you for taking the time to write this positive review. We are always pleased to receive good feedback and are happy you liked our hygienic standards."
   },
   {
     id: 3,
-    name: "Ravi Teja",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
-    content: "Best dental clinic in Punjagutta. Modern equipment and very clean environment. 5 stars!",
-    link: "https://maps.app.goo.gl/XUtCXikLSDbWesqq9"
+    name: "Sandra",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
+    content: "Lovely staff make visiting the Dentist enjoyable. Great reception/waiting areas and dedicated car spaces. Dr. Kiran is very gentle and explains everything clearly. Highly recommended for anyone who has dental anxiety!",
+    date: "1 month ago",
+    rating: 5,
+    link: "https://maps.app.goo.gl/XUtCXikLSDbWesqq9",
+    ownerReply: "Hello Sandra, thank you for the wonderful feedback. We understand dental anxiety and try our best to make every visit as comfortable as possible."
   },
   {
     id: 4,
-    name: "Priya Sharma",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
-    content: "I was afraid of dentists, but my visit here was so smooth. Painless root canal treatment.",
-    link: "https://maps.app.goo.gl/i3armQCzoryPCZjy8"
+    name: "Suresh Kumar",
+    avatar: "https://ui-avatars.com/api/?name=Suresh+Kumar&background=0284c7&color=fff",
+    content: "Excellent experience! The staff is very friendly and the treatment was completely painless. Highly recommended for root canal treatment. I was worried about the pain but Dr. Kiran made it so easy.",
+    date: "2 months ago",
+    rating: 5,
+    link: "https://maps.app.goo.gl/BtQ92mZ1zJWHDmESA",
+    ownerReply: "Thank you Suresh! We specialize in painless root canals and are glad we could help you overcome your worry."
   },
   {
     id: 5,
-    name: "Mohan Rao",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
-    content: "Professional doctors and great service. They explained everything clearly before starting.",
-    link: "https://maps.app.goo.gl/86xruQF522ywu9Vm9"
+    name: "Anitha Reddy",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop",
+    content: "Very affordable prices for high-quality dental work. Dr. Kiran is very professional and caring. The clinic is very clean and modern. I got my smile makeover done here and I couldn't be happier with the results.",
+    date: "3 months ago",
+    rating: 5,
+    link: "https://maps.app.goo.gl/DCXcic1c3ob1AtUM6",
+    ownerReply: "Glad you liked our services, Anitha! Your new smile looks amazing. Quality care at affordable prices is what we stand for."
   },
   {
     id: 6,
-    name: "Kavya S.",
-    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop",
-    content: "Great experience with my braces treatment. Seeing results faster than expected!",
-    link: "https://maps.app.goo.gl/wnd6pTmD4CFz7fQx6"
-  },
-  {
-    id: 7,
-    name: "Venkatesh P.",
-    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop",
-    content: "Very patient-centric approach. They really care about the patient's comfort and well-being.",
-    link: "https://maps.app.goo.gl/pXUkYBAGPEpY4omd7"
-  },
-  {
-    id: 8,
-    name: "Deepika G.",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
-    content: "Modern clinic with expert care. The hygiene standards are top-notch. Best in Hyderabad.",
-    link: "https://maps.app.goo.gl/cPc8jncbhhwLRTY88"
-  },
-  {
-    id: 9,
-    name: "Arjun V.",
-    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=100&fit=crop",
-    content: "Quick response and effective treatment for my toothache. Very satisfied with the care.",
-    link: "https://maps.app.goo.gl/jzkiK9gupQuZSv437"
-  },
-  {
-    id: 10,
-    name: "Sneha L.",
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop",
-    content: "Best smile makeover experience. My veneers look so natural. Thank you Dr. Kiran!",
-    link: "https://maps.app.goo.gl/AjEFojdP36mffkpw8"
+    name: "Ravi Teja",
+    avatar: "https://ui-avatars.com/api/?name=Ravi+Teja&background=059669&color=fff",
+    content: "Best dental clinic in Punjagutta. Modern equipment and very clean environment. 5 stars for the amazing smile makeover! The digital X-rays and intraoral cameras really helped me understand my dental health better.",
+    date: "4 months ago",
+    rating: 5,
+    link: "https://maps.app.goo.gl/XUtCXikLSDbWesqq9",
+    ownerReply: "Thank you Ravi! We believe in using the latest technology to provide the best care. Happy to have you as our patient."
   }
 ];
 

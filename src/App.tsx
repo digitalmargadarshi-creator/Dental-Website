@@ -13,7 +13,9 @@ import {
   ExternalLink,
   Play,
   Instagram,
-  ShieldCheck
+  ShieldCheck,
+  Check,
+  ChevronLeft
 } from 'lucide-react';
 import { SERVICES, REVIEWS, INSTAGRAM_REELS, CONTACT_INFO, PAGE_FAQS, MASTER_FAQS } from './constants';
 import { GoogleGenAI } from "@google/genai";
@@ -553,46 +555,218 @@ const Header = ({ activePage, setActivePage }: { activePage: string, setActivePa
   );
 };
 
-const ReviewCard = ({ review }: { review: typeof REVIEWS[0], key?: string }) => {
+const ReviewCard = ({ review, onReadMore }: { review: typeof REVIEWS[0], onReadMore: (review: typeof REVIEWS[0]) => void }) => {
+  const isLong = review.content.length > 120;
+  const displayContent = isLong ? `${review.content.substring(0, 120)}...` : review.content;
+
   return (
     <div 
       onClick={() => window.open(review.link, '_blank')}
-      className="w-[350px] bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer group shrink-0 mx-4"
+      className="w-[380px] bg-white p-8 rounded-3xl border border-slate-100 shadow-lg hover:shadow-2xl transition-all shrink-0 mx-4 flex flex-col cursor-pointer group"
     >
-      <div className="flex items-center gap-4 mb-4">
-        <img 
-          src={review.avatar} 
-          alt={review.name} 
-          className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
-          referrerPolicy="no-referrer"
-        />
-        <div>
-          <h4 className="font-bold text-slate-900 leading-tight">{review.name}</h4>
-          <div className="flex gap-0.5">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
-            ))}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <img 
+              src={review.avatar} 
+              alt={review.name} 
+              className="w-14 h-14 rounded-full object-cover border-2 border-slate-100"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-50">
+              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" fill="#4285F4"/>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <h4 className="font-bold text-slate-900 text-base group-hover:text-primary transition-colors">{review.name}</h4>
+              <div className="w-3.5 h-3.5 bg-[#C5A059] rounded-full flex items-center justify-center">
+                <Check size={8} className="text-white" strokeWidth={4} />
+              </div>
+            </div>
+            <p className="text-xs text-slate-400 font-medium">{review.date}</p>
           </div>
         </div>
-      </div>
-      <p className="text-slate-600 text-sm leading-relaxed mb-4 italic">"{review.content}"</p>
-      <div className="flex items-center justify-end">
-        <div className="flex items-center gap-1 text-[10px] text-slate-400 font-bold uppercase tracking-wider group-hover:text-primary transition-colors">
-          View on Google <ExternalLink size={10} />
+        <div className="text-slate-300 group-hover:text-primary transition-colors">
+          <ExternalLink size={18} />
         </div>
+      </div>
+      
+      <div className="flex gap-0.5 mb-4">
+        {[...Array(5)].map((_, i) => (
+          <Star key={i} size={18} className="fill-[#FBBC04] text-[#FBBC04]" />
+        ))}
+      </div>
+
+      <div className="flex-grow">
+        <p className="text-slate-700 text-[15px] leading-relaxed">
+          {displayContent}
+          {isLong && (
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onReadMore(review);
+              }}
+              className="text-[#C5A059] font-bold ml-1 hover:underline"
+            >
+              Read more
+            </button>
+          )}
+        </p>
       </div>
     </div>
   );
 };
 
 const ReviewCarousel = () => {
+  const [selectedReview, setSelectedReview] = useState<typeof REVIEWS[0] | null>(null);
+
   return (
-    <div className="w-full overflow-hidden py-10 bg-slate-50">
-      <div className="scrolling-wrapper">
-        {[...REVIEWS, ...REVIEWS].map((review, idx) => (
-          <ReviewCard key={`${review.id}-${idx}`} review={review} />
-        ))}
+    <div className="bg-[#1F2937] py-20">
+      <div className="max-w-7xl mx-auto px-4 mb-12">
+        <div className="bg-white rounded-3xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between shadow-xl border border-slate-100">
+          <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center">
+                <span className="text-[#4285F4] font-bold text-3xl">G</span>
+                <span className="text-[#EA4335] font-bold text-3xl">o</span>
+                <span className="text-[#FBBC05] font-bold text-3xl">o</span>
+                <span className="text-[#4285F4] font-bold text-3xl">g</span>
+                <span className="text-[#34A853] font-bold text-3xl">l</span>
+                <span className="text-[#EA4335] font-bold text-3xl">e</span>
+              </div>
+              <span className="text-slate-700 font-bold text-3xl">Reviews</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-2xl font-bold text-slate-900">4.9</span>
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={24} className="fill-[#FBBC04] text-[#FBBC04]" />
+                ))}
+              </div>
+              <span className="text-slate-400 text-lg font-medium">(302)</span>
+            </div>
+          </div>
+          
+          <a 
+            href="https://maps.app.goo.gl/BtQ92mZ1zJWHDmESA" 
+            target="_blank"
+            className="bg-[#D4C38F] text-slate-900 px-10 py-4 rounded-full font-bold text-lg hover:bg-[#C5A059] transition-all shadow-lg"
+          >
+            Review us on Google
+          </a>
+        </div>
       </div>
+
+      <div className="relative group">
+        <div className="w-full overflow-hidden py-10">
+          <div className="scrolling-wrapper">
+            {[...REVIEWS, ...REVIEWS].map((review, idx) => (
+              <ReviewCard 
+                key={`${review.id}-${idx}`} 
+                review={review} 
+                onReadMore={(r) => setSelectedReview(r)}
+              />
+            ))}
+          </div>
+        </div>
+        
+        <button className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all border border-white/10">
+          <ChevronLeft size={24} />
+        </button>
+        <button className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all border border-white/10">
+          <ChevronRight size={24} />
+        </button>
+
+        <div className="flex justify-center gap-2 mt-8">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className={`w-2 h-2 rounded-full ${i === 1 ? 'bg-[#D4C38F]' : 'bg-white/20'}`} />
+          ))}
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {selectedReview && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm"
+            onClick={() => setSelectedReview(null)}
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="bg-white w-full max-w-2xl rounded-[2.5rem] overflow-hidden shadow-2xl relative p-10"
+              onClick={e => e.stopPropagation()}
+            >
+              <button 
+                className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 transition-colors p-2 hover:bg-slate-50 rounded-full"
+                onClick={() => setSelectedReview(null)}
+              >
+                <X size={24} />
+              </button>
+
+              <div className="flex items-center gap-5 mb-8">
+                <div className="relative">
+                  <img 
+                    src={selectedReview.avatar} 
+                    alt={selectedReview.name} 
+                    className="w-16 h-16 rounded-full object-cover border-2 border-slate-100"
+                  />
+                  <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-50">
+                    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" fill="#4285F4"/>
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-bold text-slate-900 text-xl">{selectedReview.name}</h4>
+                    <div className="w-4 h-4 bg-[#C5A059] rounded-full flex items-center justify-center">
+                      <Check size={10} className="text-white" strokeWidth={4} />
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-400 font-medium">{selectedReview.date}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-1 mb-6">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={24} className="fill-[#FBBC04] text-[#FBBC04]" />
+                ))}
+              </div>
+
+              <p className="text-slate-700 text-lg leading-relaxed mb-10">
+                {selectedReview.content}
+              </p>
+
+              {selectedReview.ownerReply && (
+                <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shrink-0 overflow-hidden">
+                      <img src="https://lh3.googleusercontent.com/pw/AP1GczNHok4drTXJYdcozXcdRr3Lo4jVjmAS7Lg4tJD-G0CRKCGWoUjgsev9ukMUgSok-c8x2LhRkIjIaWbJel71g2kDnCr0rgY547_BNxfccjTkj8NhJpMezuDMRl3SiNv-UJ0kTxV--pLDGFIOQvT2_H4L=w598-h398-s-no-gm?authuser=0" className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h5 className="font-bold text-slate-900">Kiran Kumar Dental</h5>
+                        <span className="bg-slate-200 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">Owner Reply</span>
+                      </div>
+                      <p className="text-xs text-slate-400 font-medium">{selectedReview.date}</p>
+                    </div>
+                  </div>
+                  <p className="text-slate-600 leading-relaxed italic">
+                    {selectedReview.ownerReply}
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
