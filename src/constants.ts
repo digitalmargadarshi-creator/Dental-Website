@@ -16,32 +16,46 @@ import {
 
 export const SERVICES = [
   {
-    id: 'general',
-    title: 'General Dentistry',
-    description: 'Routine checkups, cleanings, and fillings to keep your teeth healthy.',
-    icon: Stethoscope,
-    image: 'https://lh3.googleusercontent.com/pw/AP1GczNHok4drTXJYdcozXcdRr3Lo4jVjmAS7Lg4tJD-G0CRKCGWoUjgsev9ukMUgSok-c8x2LhRkIjIaWbJel71g2kDnCr0rgY547_BNxfccjTkj8NhJpMezuDMRl3SiNv-UJ0kTxV--pLDGFIOQvT2_H4L=w598-h398-s-no-gm?authuser=0'
-  },
-  {
-    id: 'ortho',
-    title: 'Orthodontics',
-    description: 'Braces and aligners for a perfectly straight and beautiful smile.',
-    icon: ShieldCheck,
-    image: 'https://lh3.googleusercontent.com/pw/AP1GczPN97w7ojYdY7SyFSYNh7QanwUtF5lzRAm0ZYsBXcVpNyS9nVgP1vWhIT2dNCILs96tXNTDZ8ayTR4CWJbeoJ8to1yciX_JlTBYFks43euuUASnZajbC4hHu8B6bAhTTieW2w9b668ja-iyPUHHKgqj=w598-h398-s-no-gm?authuser=0'
-  },
-  {
-    id: 'cosmetic',
-    title: 'Cosmetic Dentistry',
-    description: 'Veneers, whitening, and smile makeovers for ultimate confidence.',
+    id: 'whitening',
+    title: 'Teeth Whitening',
+    description: 'Professional teeth bleaching for a brighter, more confident smile. Price: ₹7,500.00',
     icon: Smile,
     image: 'https://lh3.googleusercontent.com/pw/AP1GczP4ZEHssYVhUWrj5RJxElpFnBGcI3HXIUqTd8ayDVPkJHbee5X48-jOXYbqmZQT_Yvv3eyvCt9Jpj57ia70nGZXCSeyKB7GzTm3Ub-sjW1bCfM15MmBo-Dzf3B_DovvgQ8PwYIt85YlNxlXNIDrgKoY=w598-h399-s-no-gm?authuser=0'
   },
   {
-    id: 'emergency',
-    title: 'Emergency Care',
-    description: 'Immediate assistance for dental pain, broken teeth, or accidents.',
-    icon: Clock,
+    id: 'cleaning',
+    title: 'Teeth Cleaning',
+    description: 'Deep cleaning and scaling to maintain optimal oral hygiene. Price: ₹1,000.00 – ₹2,500.00',
+    icon: Stethoscope,
+    image: 'https://lh3.googleusercontent.com/pw/AP1GczNHok4drTXJYdcozXcdRr3Lo4jVjmAS7Lg4tJD-G0CRKCGWoUjgsev9ukMUgSok-c8x2LhRkIjIaWbJel71g2kDnCr0rgY547_BNxfccjTkj8NhJpMezuDMRl3SiNv-UJ0kTxV--pLDGFIOQvT2_H4L=w598-h398-s-no-gm?authuser=0'
+  },
+  {
+    id: 'zirconia',
+    title: 'Zirconia Cap',
+    description: 'High-quality Zirconia/All ceramic crowns for durability and aesthetics. Price: ₹7,500.00',
+    icon: ShieldCheck,
+    image: 'https://lh3.googleusercontent.com/pw/AP1GczPN97w7ojYdY7SyFSYNh7QanwUtF5lzRAm0ZYsBXcVpNyS9nVgP1vWhIT2dNCILs96tXNTDZ8ayTR4CWJbeoJ8to1yciX_JlTBYFks43euuUASnZajbC4hHu8B6bAhTTieW2w9b668ja-iyPUHHKgqj=w598-h398-s-no-gm?authuser=0'
+  },
+  {
+    id: 'dmls',
+    title: 'DMLS Crown/Cap',
+    description: 'Advanced DMLS Caps for precise fit and long-lasting strength. Price: ₹5,500.00 – ₹6,500.00',
+    icon: ShieldCheck,
     image: 'https://lh3.googleusercontent.com/pw/AP1GczM5P7cHRpGJT1iR2lItkvpAevLpS9kamNCEp1f-FisYkqqd_1UulC5pJNlfXoVkl_q9WAeOf_Oway-qLGuuSBDrJe2kNU-GzQ183E64rtmAS1hOBGek4KUTWeRgIrjhORcwGUqMX6IUlbnX0vOtjM6E=w598-h398-s-no-gm?authuser=0'
+  },
+  {
+    id: 'rct',
+    title: 'Root Canal Treatment',
+    description: 'Painless root canal treatment to save your natural teeth. Price: ₹2,500.00 – ₹4,500.00',
+    icon: Clock,
+    image: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600&h=400&fit=crop'
+  },
+  {
+    id: 'implant',
+    title: 'Dental Implant',
+    description: 'Permanent and natural-looking tooth replacement solution. Price: ₹20,000.00 – ₹25,000.00',
+    icon: Stethoscope,
+    image: 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=600&h=400&fit=crop'
   }
 ];
 
@@ -50,27 +64,27 @@ export const REVIEWS = [
     id: 1,
     name: "CLIFFORD SHUTTLEWORTH",
     avatar: "https://ui-avatars.com/api/?name=Clifford+Shuttleworth&background=db2777&color=fff",
-    content: "Very happy with service and attention. The whole process went smoothly in a happy atmosphere, and Dr. Kiran was very professional throughout. I would highly recommend this clinic for anyone looking for painless dental care. The staff is also very supportive.",
+    content: "Very happy with service and attention. The whole process went smoothly in a happy atmosphere, and Dr. Sharath was very professional throughout. I would highly recommend this clinic for anyone looking for painless dental care. The staff is also very supportive.",
     date: "4 days ago",
     rating: 5,
     link: "https://maps.app.goo.gl/BtQ92mZ1zJWHDmESA",
-    ownerReply: "Thank you Clifford for your kind words! We are glad you had a smooth experience with us. Our team always strives to provide a comfortable environment for our patients."
+    ownerReply: "Thank you Clifford for your kind words! We are glad you had a smooth experience with us at Sharath Dental Implant clinic. Our team always strives to provide a comfortable environment for our patients."
   },
   {
     id: 2,
     name: "Gerard Ainsworth",
     avatar: "https://ui-avatars.com/api/?name=Gerard+Ainsworth&background=7c3aed&color=fff",
-    content: "Absolutely brilliant! Great friendly service. Took the time to explain things and go through all the options. The treatment was painless and the results are fantastic. Best dentist in Hyderabad. I've visited many clinics but this one stands out for its hygiene and expertise.",
+    content: "Absolutely brilliant! Great friendly service. Took the time to explain things and go through all the options. The treatment was painless and the results are fantastic. Best dentist in Hyderabad. I've visited many clinics but Sharath Dental stands out for its hygiene and expertise.",
     date: "1 month ago",
     rating: 5,
     link: "https://maps.app.goo.gl/DCXcic1c3ob1AtUM6",
-    ownerReply: "Hello Gerard, thank you for taking the time to write this positive review. We are always pleased to receive good feedback and are happy you liked our hygienic standards."
+    ownerReply: "Hello Gerard, thank you for taking the time to write this positive review for Sharath Dental Implant clinic. We are always pleased to receive good feedback and are happy you liked our hygienic standards."
   },
   {
     id: 3,
     name: "Sandra",
     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
-    content: "Lovely staff make visiting the Dentist enjoyable. Great reception/waiting areas and dedicated car spaces. Dr. Kiran is very gentle and explains everything clearly. Highly recommended for anyone who has dental anxiety!",
+    content: "Lovely staff make visiting the Dentist enjoyable. Great reception/waiting areas and dedicated car spaces. Dr. Sharath is very gentle and explains everything clearly. Highly recommended for anyone who has dental anxiety!",
     date: "1 month ago",
     rating: 5,
     link: "https://maps.app.goo.gl/XUtCXikLSDbWesqq9",
@@ -80,7 +94,7 @@ export const REVIEWS = [
     id: 4,
     name: "Suresh Kumar",
     avatar: "https://ui-avatars.com/api/?name=Suresh+Kumar&background=0284c7&color=fff",
-    content: "Excellent experience! The staff is very friendly and the treatment was completely painless. Highly recommended for root canal treatment. I was worried about the pain but Dr. Kiran made it so easy.",
+    content: "Excellent experience! The staff is very friendly and the treatment was completely painless. Highly recommended for root canal treatment. I was worried about the pain but Dr. Sharath made it so easy.",
     date: "2 months ago",
     rating: 5,
     link: "https://maps.app.goo.gl/BtQ92mZ1zJWHDmESA",
@@ -90,7 +104,7 @@ export const REVIEWS = [
     id: 5,
     name: "Anitha Reddy",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop",
-    content: "Very affordable prices for high-quality dental work. Dr. Kiran is very professional and caring. The clinic is very clean and modern. I got my smile makeover done here and I couldn't be happier with the results.",
+    content: "Very affordable prices for high-quality dental work. Dr. Sharath is very professional and caring. The clinic is very clean and modern. I got my smile makeover done here and I couldn't be happier with the results.",
     date: "3 months ago",
     rating: 5,
     link: "https://maps.app.goo.gl/DCXcic1c3ob1AtUM6",
@@ -139,36 +153,36 @@ export const CONTACT_INFO = {
   phone: "+91 6305879 507",
   whatsapp: "916305879507",
   email: "kiran.tuni@gmail.com",
-  address: "Himalaya Bookstore & Petrol Bunk Street, Plat No C4, 4th Floor, Surya Teja Apartment, Dwarakapuri, Punjagutta, Hyderabad, Telangana 500082",
+  address: "8-2-13/2, Behind Big Bazaar, Opposite My Home Madhuban above aquaden aquarium shop srinagar colony Main road, Nagarjuna Nagar Colony Yellareddy Guda, Punjagutta, Hyderabad, Telangana 500073",
   mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.716885161514!2d78.4518294!3d17.425369299999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa854eecb89a5b4a1%3A0x38602ec548ca0f43!2sKiran%20The%20Marketer!5e0!3m2!1sen!2sin!4v1772710148655!5m2!1sen!2sin"
 };
 
 export const PAGE_FAQS = {
   home: [
-    { q: "What services do you offer?", a: "We offer a full range of dental services including General Dentistry, Orthodontics, Cosmetic Dentistry, and Emergency Care." },
+    { q: "What services do you offer?", a: "Sharath Dental Implant clinic is one of the best rated dental clinic in hyderbad. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more." },
     { q: "Are you open on weekends?", a: "Yes, we are open on Saturdays from 10:00 AM to 6:00 PM. We are closed on Sundays except for pre-booked emergencies." },
     { q: "How can I book an appointment?", a: "You can book an appointment by calling us at +91 6305879 507, messaging us on WhatsApp, or using the 'Book Appointment' button on our website." },
-    { q: "Do you offer painless dentistry?", a: "Absolutely! We specialize in painless treatments using modern techniques and advanced anesthesia to ensure your comfort." },
-    { q: "Where is the hospital located?", a: "We are located in Punjagutta, Hyderabad, near Himalaya Bookstore & Petrol Bunk Street." },
+    { q: "Do you offer painless dentistry?", a: "Absolutely! Sharath Dental specializes in painless treatments using modern techniques and advanced anesthesia to ensure your comfort." },
+    { q: "Where is the hospital located?", a: "We are located at 8-2-13/2, Behind Big Bazaar, Opposite My Home Madhuban, Punjagutta, Hyderabad." },
     { q: "Is there parking available?", a: "Yes, we have dedicated parking space for our patients in the building premises." },
     { q: "Do you accept insurance?", a: "We work with several major dental insurance providers. Please contact our front desk to verify your specific plan." }
   ],
   about: [
-    { q: "Who is Dr. Kiran?", a: "Dr. Kiran is our lead dentist with over 15 years of experience in advanced dentistry and a passion for patient care." },
-    { q: "How long has the hospital been operating?", a: "Kiran Kumar Dental Hospital has been serving the Hyderabad community for over a decade with excellence." },
+    { q: "Who is the lead dentist?", a: "Our lead dentist at Sharath Dental Implant clinic has over 15 years of experience in advanced dentistry and a passion for patient care." },
+    { q: "How long has the hospital been operating?", a: "Sharath Dental Implant clinic has been serving the Hyderabad community for over a decade with excellence." },
     { q: "What is your mission?", a: "Our mission is to provide high-quality, accessible, and painless dental care to every patient who walks through our doors." },
     { q: "Are your doctors certified?", a: "Yes, all our specialists are highly qualified, board-certified, and regularly updated with the latest dental advancements." },
     { q: "What technology do you use?", a: "We use state-of-the-art technology including digital X-rays, intraoral cameras, and laser dentistry tools." },
     { q: "Do you handle international patients?", a: "Yes, we have a dedicated protocol for international patients, including virtual consultations and travel assistance." },
-    { q: "What makes you different?", a: "Our commitment to 'Painless Dentistry' and our patient-first approach sets us apart as the most trusted clinic in the region." }
+    { q: "What makes you different?", a: "Sharath Dental is one of the best rated dental clinic in hyderbad. Our commitment to 'Painless Dentistry' and our patient-first approach sets us apart." }
   ],
   services: [
     { q: "What is general dentistry?", a: "General dentistry covers routine checkups, cleanings, fillings, and preventive care to maintain your overall oral health." },
-    { q: "How long does a root canal take?", a: "A typical root canal treatment can be completed in 1-2 sittings, depending on the complexity of the case." },
-    { q: "Are dental implants permanent?", a: "Yes, with proper care and hygiene, dental implants are designed to be a lifelong solution for missing teeth." },
-    { q: "How often should I get a cleaning?", a: "We recommend a professional dental cleaning every 6 months to prevent plaque buildup and gum disease." },
-    { q: "Do you offer teeth whitening?", a: "Yes, we offer both in-office professional whitening and take-home kits for a brighter smile." },
-    { q: "What are dental veneers?", a: "Veneers are thin, custom-made shells crafted of tooth-colored materials designed to cover the front surface of teeth." },
+    { q: "How long does a root canal take?", a: "A typical root canal treatment can be completed in 1-2 sittings, depending on the complexity of the case. Price: ₹2,500.00 – ₹4,500.00" },
+    { q: "Are dental implants permanent?", a: "Yes, with proper care and hygiene, dental implants are designed to be a lifelong solution for missing teeth. Price: ₹20,000.00 – ₹25,000.00" },
+    { q: "How often should I get a cleaning?", a: "We recommend a professional dental cleaning every 6 months. Price: ₹1,000.00 – ₹2,500.00" },
+    { q: "Do you offer teeth whitening?", a: "Yes, we offer professional teeth bleaching for a brighter smile. Price: ₹7,500.00" },
+    { q: "What are dental caps?", a: "We offer Zirconia caps (₹7,500.00) and DMLS caps (₹5,500.00 – ₹6,500.00) for superior strength and aesthetics." },
     { q: "Can you fix crooked teeth without braces?", a: "Yes, we offer clear aligners (Invisalign) and cosmetic bonding as alternatives to traditional metal braces." }
   ],
   testimonials: [
@@ -195,9 +209,9 @@ export const MASTER_FAQS = [
   {
     category: "About the Business",
     items: [
-      { q: "What is the history of Kiran Kumar Dental Hospital?", a: "Founded by Dr. Kiran, the hospital started as a small clinic and has grown into a multi-specialty dental hub in Hyderabad, known for its expertise and patient-centric care." },
+      { q: "What is the history of Sharath Dental Implant clinic?", a: "Sharath Dental Implant clinic is one of the best rated dental clinic in hyderbad. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more." },
       { q: "Is the hospital government-recognized?", a: "Yes, we are a fully licensed and registered dental hospital under the Telangana State Health Department." },
-      { q: "Do you have multiple branches?", a: "Currently, we operate from our main state-of-the-art facility in Punjagutta to ensure the highest quality control and direct supervision by Dr. Kiran." }
+      { q: "Do you have multiple branches?", a: "Currently, we operate from our main state-of-the-art facility in Punjagutta to ensure the highest quality control and direct supervision." }
     ]
   },
   {
@@ -219,7 +233,7 @@ export const MASTER_FAQS = [
   {
     category: "Pricing & Payments",
     items: [
-      { q: "What is the price range for common treatments?", a: "Consultation: ₹300-500 | Cleanings: ₹1000-2500 | Fillings: ₹800-2000 | Root Canal: ₹4000-8000 | Implants: ₹25,000+. Prices vary based on material choice." },
+      { q: "What is the price range for common treatments?", a: "Whitening: ₹7,500 | Cleaning: ₹1,000-2,500 | Zirconia Cap: ₹7,500 | DMLS Cap: ₹5,500-6,500 | Root Canal: ₹2,500-4,500 | Implants: ₹20,000-25,000." },
       { q: "What payment methods do you accept?", a: "We accept Cash, Credit/Debit Cards, UPI (GPay, PhonePe), and Bank Transfers." },
       { q: "Do you offer EMI options?", a: "Yes, for major treatments like Orthodontics or Full Mouth Rehabilitation, we offer 0% interest EMI plans." }
     ]

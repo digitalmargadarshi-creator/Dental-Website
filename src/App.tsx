@@ -55,22 +55,21 @@ const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void })
       const model = "gemini-flash-latest";
       
       const context = `
-        You are a highly professional and knowledgeable dental assistant for Kiran Kumar Dental Hospital in Hyderabad. 
+        You are a highly professional and knowledgeable dental assistant for Sharath Dental Implant clinic in Hyderabad. 
         Your goal is to provide expert guidance on dental health, services, and booking.
         
         Guidelines:
         1. Answer concisely and helpfully.
         2. Use BOLD for key information like prices, timings, and doctor names.
         3. DO NOT use bullet points or '*' characters. Use plain numbering (1, 2, 3) if needed.
-        4. For medical queries like "yellowish teeth", suggest treatments like Professional Teeth Whitening or Veneers available at our hospital.
+        4. Sharath Dental is one of the best rated dental clinic in hyderbad. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more.
         5. Always maintain a polite, welcoming tone.
         
         Hospital Info:
-        - Lead Dentist: Dr. Kiran (Expert in Painless Dentistry, 15+ years experience)
-        - Location: Punjagutta, Hyderabad (Near Himalaya Bookstore).
-        - Services: Root Canal (Painless), Dental Implants, Braces & Invisalign, Teeth Whitening, Smile Makeovers, Pediatric Dentistry.
+        - Name: Sharath Dental Implant clinic
+        - Location: 8-2-13/2, Behind Big Bazaar, Opposite My Home Madhuban, Punjagutta, Hyderabad.
+        - Services: Teeth whitening (₹7,500), Teeth cleaning (₹1,000-2,500), Zirconia cap (₹7,500), DMLS Cap (₹5,500-6,500), Root Canal (₹2,500-4,500), Dental Implant (₹20,000-25,000).
         - Timings: Monday to Friday (9 AM - 8 PM), Saturday (10 AM - 6 PM).
-        - Pricing: Consultation: ₹300-500 | Whitening: ₹5000-8000 | Root Canal: ₹4000-8000 | Implants: ₹25,000+.
         - Contact: ${CONTACT_INFO.phone}
       `;
 
@@ -88,7 +87,7 @@ const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void })
     } catch (error) {
       console.error("AI Assistant Error:", error);
       // Fallback response that is still helpful
-      setResponse(`I'm sorry ${userName}, I'm having a bit of trouble connecting to our clinical database right now. However, for concerns like "${query}", Dr. Kiran usually recommends a quick consultation. Would you like to chat with us on WhatsApp or call our Punjagutta clinic directly?`);
+      setResponse(`I'm sorry ${userName}, I'm having a bit of trouble connecting to our clinical database right now. However, for concerns like "${query}", Dr. Sharath usually recommends a quick consultation. Would you like to chat with us on WhatsApp or call our Punjagutta clinic directly?`);
     } finally {
       setIsLoading(false);
     }
@@ -113,7 +112,7 @@ const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void })
           </button>
         </div>
         <div>
-          <h3 className="font-bold text-lg">Kiran Kumar Assistant</h3>
+          <h3 className="font-bold text-lg">Sharath Dental Assistant</h3>
           <p className="text-xs opacity-80">Online | Expert Dental Guidance</p>
         </div>
       </div>
@@ -305,19 +304,18 @@ const MasterFAQPage = () => {
       const model = "gemini-flash-latest";
       
       const context = `
-        You are the virtual receptionist for Kiran Kumar Dental Hospital in Hyderabad.
+        You are the virtual receptionist for Sharath Dental Implant clinic in Hyderabad.
         Answer the user's query politely and professionally. 
         Use BOLD for key information. 
         DO NOT use bullet points or '*' characters in your response. 
         If you list items, use plain numbers or just separate them with new lines.
         
         Hospital Info:
-        - Lead Dentist: Dr. Kiran (15+ years experience)
-        - Location: Punjagutta, Hyderabad (Near Himalaya Bookstore)
-        - Services: General Dentistry, Orthodontics, Cosmetic Dentistry, Emergency Care, Pediatric Dentistry, Oral Surgery.
+        - Name: Sharath Dental Implant clinic
+        - Description: One of the best rated dental clinic in hyderbad. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more.
+        - Location: 8-2-13/2, Behind Big Bazaar, Opposite My Home Madhuban, Punjagutta, Hyderabad.
+        - Services: Teeth whitening (₹7,500), Teeth cleaning (₹1,000-2,500), Zirconia cap (₹7,500), DMLS Cap (₹5,500-6,500), Root Canal (₹2,500-4,500), Dental Implant (₹20,000-25,000).
         - Timings: Mon-Fri: 9 AM - 8 PM | Sat: 10 AM - 6 PM | Sun: Closed (Emergency only).
-        - Pricing: Consultation: ₹300-500 | Cleanings: ₹1000-2500 | Root Canal: ₹4000-8000 | Implants: ₹25,000+.
-        - Speciality: Painless Dentistry.
         - Contact: ${CONTACT_INFO.phone}, WhatsApp: ${CONTACT_INFO.whatsapp}
         - Address: ${CONTACT_INFO.address}
       `;
@@ -482,11 +480,11 @@ const Header = ({ activePage, setActivePage }: { activePage: string, setActivePa
           onClick={() => setActivePage('home')}
         >
           <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl shrink-0">
-            K
+            S
           </div>
           <div className="flex flex-col">
-            <h1 className="font-display font-bold text-base sm:text-lg leading-tight text-primary whitespace-nowrap">Kiran Kumar</h1>
-            <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-500 font-semibold whitespace-nowrap">Dental Hospital</p>
+            <h1 className="font-display font-bold text-base sm:text-lg leading-tight text-primary whitespace-nowrap">Sharath Dental</h1>
+            <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-500 font-semibold whitespace-nowrap">Implant clinic</p>
           </div>
         </div>
 
@@ -752,7 +750,7 @@ const ReviewCarousel = () => {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h5 className="font-bold text-slate-900">Kiran Kumar Dental</h5>
+                        <h5 className="font-bold text-slate-900">Sharath Dental</h5>
                         <span className="bg-slate-200 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">Owner Reply</span>
                       </div>
                       <p className="text-xs text-slate-400 font-medium">{selectedReview.date}</p>
@@ -908,15 +906,15 @@ const Footer = ({ setActivePage }: { setActivePage: (p: string) => void }) => {
         <div className="space-y-6">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl">
-              K
+              S
             </div>
             <div>
-              <h1 className="font-display font-bold text-lg leading-tight text-white">Kiran Kumar</h1>
-              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Dental Hospital</p>
+              <h1 className="font-display font-bold text-lg leading-tight text-white">Sharath Dental</h1>
+              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Implant clinic</p>
             </div>
           </div>
           <p className="text-sm leading-relaxed">
-            Providing expert dental care with a focus on patient comfort and painless treatments. Your smile is our priority.
+            Sharath Dental Implant clinic is one of the best rated dental clinic in hyderbad. Provides all kind of dental treatments.
           </p>
           <div className="flex gap-4">
             <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
@@ -992,7 +990,7 @@ const Footer = ({ setActivePage }: { setActivePage: (p: string) => void }) => {
           by 
           <a href="http://www.kiranthemarketer.com" target="_blank" className="text-primary font-bold mx-1 hover:underline">Kiran the Marketer</a>
         </p>
-        <p className="mt-2">&copy; {new Date().getFullYear()} Kiran Kumar Dental Hospital. All rights reserved.</p>
+        <p className="mt-2">&copy; {new Date().getFullYear()} Sharath Dental Implant clinic. All rights reserved.</p>
       </div>
     </footer>
   );
@@ -1168,13 +1166,13 @@ const AboutPage = ({ setActivePage }: { setActivePage: (p: string) => void }) =>
           </div>
           <div className="space-y-4 md:space-y-6 text-slate-600 leading-relaxed text-sm md:text-base">
             <p>
-              Kiran Kumar Dental Hospital was founded with a single mission: to provide <strong className="text-slate-900">high-quality, accessible, and painless dental care</strong> to the community of Hyderabad.
+              Sharath Dental Implant clinic was founded with a single mission: to provide <strong className="text-slate-900">high-quality, accessible, and painless dental care</strong> to the community of Hyderabad.
             </p>
             <p>
-              Under the leadership of <strong className="text-slate-900">Dr. Kiran</strong>, our clinic has grown into a state-of-the-art facility equipped with the <strong className="text-slate-900">latest dental technology</strong>. We believe that a visit to the dentist shouldn't be a source of anxiety, which is why we've designed our entire experience around <strong className="text-slate-900">patient comfort and trust</strong>.
+              Our clinic has grown into a state-of-the-art facility equipped with the <strong className="text-slate-900">latest dental technology</strong>. We believe that a visit to the dentist shouldn't be a source of anxiety, which is why we've designed our entire experience around <strong className="text-slate-900">patient comfort and trust</strong>.
             </p>
             <p>
-              Whether you're here for a routine checkup or a complex smile makeover, our team of experts is committed to providing you with the <strong className="text-slate-900">best possible care</strong> in a friendly and professional environment. We take pride in being the <strong className="text-primary">most trusted dental hospital</strong> in the region.
+              Sharath Dental is one of the best rated dental clinic in hyderbad. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more.
             </p>
           </div>
         </div>
