@@ -339,11 +339,11 @@ Please guide me further.`;
             opacity: 1, 
             y: 0, 
             scale: 1,
-            height: isMinimized ? '80px' : '600px',
-            width: isMinimized ? '280px' : '400px'
+            height: isMinimized ? '80px' : (window.innerWidth < 640 ? 'calc(100% - 1rem)' : '600px'),
+            width: isMinimized ? '280px' : (window.innerWidth < 640 ? 'calc(100% - 2rem)' : '400px')
           }}
           exit={{ opacity: 0, y: 100, scale: 0.8 }}
-          className="fixed bottom-6 right-6 z-[100] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col transition-all duration-300"
+          className="fixed bottom-2 right-2 sm:bottom-6 sm:right-6 z-[100] bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col transition-all duration-300"
         >
           {/* Header */}
           <div className="bg-primary p-6 text-white flex justify-between items-center shrink-0">
@@ -387,7 +387,7 @@ Please guide me further.`;
                     </div>
                     
                     {msg.options && (
-                      <div className="flex flex-wrap gap-2 mt-3">
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
                         {msg.options.map((opt: string) => (
                           <button
                             key={opt}
@@ -403,7 +403,7 @@ Please guide me further.`;
                                 handleStepLogic(opt);
                               }
                             }}
-                            className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold hover:border-primary hover:text-primary transition-all shadow-sm"
+                            className="bg-white border border-slate-200 text-slate-700 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold hover:border-primary hover:text-primary transition-all shadow-sm active:scale-95"
                           >
                             {opt}
                           </button>
@@ -728,9 +728,9 @@ const Header = ({ activePage, setActivePage }: { activePage: string, setActivePa
           <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl shrink-0">
             S
           </div>
-          <div className="flex flex-col">
-            <h1 className="font-display font-bold text-base sm:text-lg leading-tight text-primary whitespace-nowrap">Sharath Dental</h1>
-            <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-500 font-semibold whitespace-nowrap">Implant clinic</p>
+          <div className="flex flex-col overflow-hidden">
+            <h1 className="font-display font-bold text-sm sm:text-lg leading-tight text-primary whitespace-nowrap overflow-hidden text-ellipsis">Sharath Dental</h1>
+            <p className="text-[8px] sm:text-[10px] uppercase tracking-widest text-slate-500 font-semibold whitespace-nowrap">Implant clinic</p>
           </div>
         </div>
 
@@ -1248,43 +1248,52 @@ const HomePage = ({ setActivePage }: { setActivePage: (p: string) => void }) => 
   return (
     <div className="space-y-24 pb-24">
       {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[600px] h-[80vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
+          {/* Desktop Image */}
           <img 
             src="https://images.unsplash.com/photo-1445527815219-ecbfec67492e?w=1920&h=1080&fit=crop" 
             alt="Modern Dental Clinic"
-            className="w-full h-full object-cover"
+            className="hidden md:block w-full h-full object-cover object-right"
             referrerPolicy="no-referrer"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent"></div>
+          {/* Mobile Image - Using a more vertical-friendly clinic image */}
+          <img 
+            src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&h=1200&fit=crop" 
+            alt="Modern Dental Clinic Mobile"
+            className="block md:hidden w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent md:via-white/80"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent md:hidden"></div>
         </div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 w-full">
           <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="max-w-2xl"
           >
-            <span className="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-bold mb-6">
+            <span className="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-xs sm:text-sm font-bold mb-4 sm:mb-6">
               Hyderabad's Most Trusted Dental Care
             </span>
-            <h1 className="text-5xl md:text-7xl font-bold text-slate-900 leading-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-slate-900 leading-tight mb-4 sm:mb-6">
               Your Journey to a <span className="text-primary">Perfect Smile</span> Starts Here.
             </h1>
-            <p className="text-lg text-slate-600 mb-10 leading-relaxed">
+            <p className="text-base sm:text-lg text-slate-600 mb-8 sm:mb-10 leading-relaxed">
               Experience world-class dentistry with a gentle touch. We specialize in painless treatments and modern aesthetic solutions.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <button 
                 onClick={() => setActivePage('contact')}
-                className="bg-primary text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-primary/30 hover:bg-secondary transition-all transform hover:-translate-y-1"
+                className="bg-primary text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-primary/30 hover:bg-secondary transition-all transform hover:-translate-y-1 w-full sm:w-auto"
               >
                 Book Your Painless Visit
               </button>
               <button 
                 onClick={() => setActivePage('services')}
-                className="bg-white text-slate-900 px-8 py-4 rounded-2xl font-bold text-lg border border-slate-200 hover:bg-slate-50 transition-all"
+                className="bg-white text-slate-900 px-8 py-4 rounded-2xl font-bold text-lg border border-slate-200 hover:bg-slate-50 transition-all w-full sm:w-auto"
               >
                 Explore Services
               </button>
