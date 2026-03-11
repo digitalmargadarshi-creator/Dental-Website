@@ -25,52 +25,93 @@ import ReactMarkdown from 'react-markdown';
 
 const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [userName, setUserName] = useState('');
-  const [query, setQuery] = useState('');
-  const [response, setResponse] = useState<string | null>(null);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [currentStep, setCurrentStep] = useState<string>('welcome');
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState<'name' | 'chat'>('name');
+  const [leadData, setLeadData] = useState({
+    name: '',
+    problem: '',
+    urgency: '',
+    budget: '',
+    phone: '',
+    bookingDate: '',
+    bookingTime: '',
+    isUrgent: false
+  });
+  const [inputValue, setInputValue] = useState('');
+  const [hasSentToWhatsApp, setHasSentToWhatsApp] = useState(false);
+  const chatContainerRef = React.useRef<HTMLDivElement>(null);
+
+  const BUSINESS_NAME = "Sharath Dental Implant clinic";
+  const WHATSAPP_NUMBER = CONTACT_INFO.whatsapp;
+  const PHONE_NUMBER = CONTACT_INFO.phone;
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsOpen(true), 3000);
+    const timer = setTimeout(() => {
+      setIsOpen(true);
+      addAssistantMessage(`Hello! Welcome to ${BUSINESS_NAME}. I'm your assistant. How can I help you today?`);
+      setCurrentStep('name');
+      setTimeout(() => addAssistantMessage("May I know your name?"), 1000);
+    }, 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleAsk = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages, isLoading]);
 
+  const addAssistantMessage = (content: string, options?: string[], type: string = 'text') => {
+    setMessages(prev => [...prev, {
+      id: Math.random().toString(36).substr(2, 9),
+      role: 'assistant',
+      content,
+      options,
+      type,
+      timestamp: new Date()
+    }]);
+  };
+
+  const addUserMessage = (content: string) => {
+    setMessages(prev => [...prev, {
+      id: Math.random().toString(36).substr(2, 9),
+      role: 'user',
+      content,
+      timestamp: new Date()
+    }]);
+  };
+
+  const handleUrgencyDetection = (text: string) => {
+    const urgentKeywords = ['emergency', 'severe pain', 'urgent', 'broken', 'accident', 'bleeding', 'swelling', 'pain'];
+    return urgentKeywords.some(keyword => text.toLowerCase().includes(keyword));
+  };
+
+  const handleAIService = async (query: string, userName: string) => {
     setIsLoading(true);
-    setResponse(null);
-
     try {
-      // Use the platform-provided API key
       const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error("API Key is not configured");
-      }
-
+      if (!apiKey) throw new Error("API Key missing");
+      
       const ai = new GoogleGenAI({ apiKey });
-      // Use gemini-flash-latest for faster and more reliable general Q&A
       const model = "gemini-flash-latest";
       
       const context = `
-        You are a highly professional and knowledgeable dental assistant for Sharath Dental Implant clinic in Hyderabad. 
-        Your goal is to provide expert guidance on dental health, services, and booking.
+        You are a highly professional and knowledgeable dental receptionist for ${BUSINESS_NAME} in Hyderabad. 
+        Your goal is to provide expert guidance and reassure the patient.
         
         Guidelines:
         1. Answer concisely and helpfully.
-        2. Use BOLD for key information like prices, timings, and doctor names.
-        3. DO NOT use bullet points or '*' characters. Use plain numbering (1, 2, 3) if needed.
+        2. Use BOLD for key information.
+        3. DO NOT use bullet points or '*' characters.
         4. Sharath Dental is one of the best rated dental clinic in hyderbad. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more.
-        5. Always maintain a polite, welcoming tone.
         
         Hospital Info:
-        - Name: Sharath Dental Implant clinic
-        - Location: 8-2-13/2, Behind Big Bazaar, Opposite My Home Madhuban, Punjagutta, Hyderabad.
+        - Name: ${BUSINESS_NAME}
+        - Location: ${CONTACT_INFO.address}
         - Services: Teeth whitening (₹7,500), Teeth cleaning (₹1,000-2,500), Zirconia cap (₹7,500), DMLS Cap (₹5,500-6,500), Root Canal (₹2,500-4,500), Dental Implant (₹20,000-25,000).
-        - Timings: Monday to Friday (9 AM - 8 PM), Saturday (10 AM - 6 PM).
-        - Contact: ${CONTACT_INFO.phone}
+        - Timings: Mon-Fri (9 AM - 8 PM), Sat (10 AM - 6 PM).
       `;
 
       const result = await ai.models.generateContent({
@@ -78,148 +119,353 @@ const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void })
         contents: [{ role: 'user', parts: [{ text: `${context}\n\nUser (${userName}) Question: ${query}` }] }],
       });
 
-      const text = result.text;
-      if (!text) {
-        throw new Error("Empty response from AI");
-      }
-
-      setResponse(text);
+      return result.text;
     } catch (error) {
       console.error("AI Assistant Error:", error);
-      // Fallback response that is still helpful
-      setResponse(`I'm sorry ${userName}, I'm having a bit of trouble connecting to our clinical database right now. However, for concerns like "${query}", Dr. Sharath usually recommends a quick consultation. Would you like to chat with us on WhatsApp or call our Punjagutta clinic directly?`);
+      return null;
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleStepLogic = async (input: string) => {
+    const trimmedInput = input.trim();
+    if (!trimmedInput && currentStep !== 'booking_offer') return;
+
+    addUserMessage(trimmedInput);
+    setInputValue('');
+
+    switch (currentStep) {
+      case 'name':
+        setLeadData(prev => ({ ...prev, name: trimmedInput }));
+        addAssistantMessage(`Nice to meet you **${trimmedInput}**!`);
+        setTimeout(() => {
+          addAssistantMessage("How can we help you today?", [
+            "Need service", "Consultation", "Booking", "General question"
+          ]);
+          setCurrentStep('intent');
+        }, 800);
+        break;
+
+      case 'intent':
+        if (trimmedInput === "Need service") {
+          addAssistantMessage("Which service are you interested in?", [
+            "Dental Implant", "Root Canal", "Teeth Whitening", "Teeth Cleaning", "Zirconia Cap", "DMLS Cap", "Invisalign", "Laser Gum Surgery", "Smile Makeover", "Teeth Braces", "Wisdom Tooth Removal", "Other"
+          ]);
+          setCurrentStep('service_selection');
+        } else if (trimmedInput === "Booking") {
+          setLeadData(prev => ({ ...prev, problem: "Appointment Booking" }));
+          addAssistantMessage("Our schedule is **Mon-Fri (9 AM - 8 PM)** and **Sat (10 AM - 6 PM)**. What day works best for you?", [
+            "Today", "Tomorrow", "Day after Tomorrow", "This Weekend"
+          ]);
+          setCurrentStep('booking_date');
+        } else if (trimmedInput === "General question") {
+          addAssistantMessage("I'm here to help! What is your question? I will answer it and then connect you with our team on WhatsApp.");
+          setCurrentStep('chat');
+        } else {
+          // Consultation
+          addAssistantMessage("Please tell me a bit about what you're looking for or any dental concerns you have.");
+          setCurrentStep('problem');
+        }
+        break;
+
+      case 'service_selection':
+        setLeadData(prev => ({ ...prev, problem: trimmedInput }));
+        addAssistantMessage(`Great choice! **${trimmedInput}** is one of our specialties.`);
+        setTimeout(() => {
+          addAssistantMessage("Is this something you are planning to do soon?", [
+            "Immediately", "Within a week", "Within a month", "Just researching"
+          ]);
+          setCurrentStep('urgency');
+        }, 800);
+        break;
+
+      case 'problem':
+        const isUrgent = handleUrgencyDetection(trimmedInput);
+        setLeadData(prev => ({ ...prev, problem: trimmedInput, isUrgent }));
+        
+        setIsLoading(true);
+        const aiResponse = await handleAIService(trimmedInput, leadData.name);
+        setIsLoading(false);
+
+        if (aiResponse) {
+          addAssistantMessage(aiResponse);
+        } else {
+          addAssistantMessage(`Thank you for sharing that. At **${BUSINESS_NAME}**, we regularly help customers with **${trimmedInput}**.`);
+        }
+
+        if (isUrgent) {
+          setTimeout(() => {
+            addAssistantMessage("This sounds urgent. I recommend contacting our team immediately for priority care.", ["Call Now", "WhatsApp Now"]);
+            setCurrentStep('urgent_escalation');
+          }, 1000);
+        } else {
+          setTimeout(() => {
+            addAssistantMessage("Is this something you are planning to do soon?", [
+              "Immediately", "Within a week", "Within a month", "Just researching"
+            ]);
+            setCurrentStep('urgency');
+          }, 1000);
+        }
+        break;
+
+      case 'urgency':
+        setLeadData(prev => ({ ...prev, urgency: trimmedInput }));
+        setTimeout(() => {
+          addAssistantMessage("So our team can assist you faster, may I have your phone number?");
+          setCurrentStep('phone');
+        }, 800);
+        break;
+
+      case 'phone':
+        setLeadData(prev => ({ ...prev, phone: trimmedInput }));
+        setTimeout(() => {
+          addAssistantMessage("Would you like to book an appointment with our team?", [
+            "Yes, book appointment", "I need more information", "Not now"
+          ]);
+          setCurrentStep('booking_offer');
+        }, 800);
+        break;
+
+      case 'booking_offer':
+        if (trimmedInput.toLowerCase().includes('yes')) {
+          addAssistantMessage("Our schedule is **Mon-Fri (9 AM - 8 PM)** and **Sat (10 AM - 6 PM)**. What day works best for you?", [
+            "Today", "Tomorrow", "Day after Tomorrow", "This Weekend"
+          ]);
+          setCurrentStep('booking_date');
+        } else {
+          showSummary();
+        }
+        break;
+
+      case 'booking_date':
+        setLeadData(prev => ({ ...prev, bookingDate: trimmedInput }));
+        addAssistantMessage("What time is convenient? (Our slots: Morning 9-12, Afternoon 12-4, Evening 4-8)", [
+          "Morning (9 AM - 12 PM)", "Afternoon (12 PM - 4 PM)", "Evening (4 PM - 8 PM)"
+        ]);
+        setCurrentStep('booking_time');
+        break;
+
+      case 'booking_time':
+        setLeadData(prev => ({ ...prev, bookingTime: trimmedInput }));
+        if (!leadData.phone) {
+          setTimeout(() => {
+            addAssistantMessage("To finalize your request, may I have your phone number?");
+            setCurrentStep('phone_final');
+          }, 800);
+        } else {
+          showSummary();
+        }
+        break;
+
+      case 'phone_final':
+        setLeadData(prev => ({ ...prev, phone: trimmedInput }));
+        showSummary();
+        break;
+
+      case 'chat':
+        setLeadData(prev => ({ ...prev, problem: trimmedInput }));
+        setIsLoading(true);
+        const response = await handleAIService(trimmedInput, leadData.name);
+        setIsLoading(false);
+        if (response) {
+          addAssistantMessage(response);
+          if (!leadData.phone) {
+            addAssistantMessage("To send this question to our team on WhatsApp for a detailed answer, may I have your phone number?");
+            setCurrentStep('phone_final');
+          } else {
+            showSummary();
+          }
+        } else {
+          addAssistantMessage(`Hi **${leadData.name}**, I'm having a small technical issue accessing our help desk right now. But our team can still assist you quickly.`, ["Call Our Reception", "Chat on WhatsApp"]);
+        }
+        break;
+
+      case 'chat_followup':
+        if (trimmedInput === "Send to WhatsApp") {
+          addAssistantMessage("To send this to our team, may I have your phone number?");
+          setCurrentStep('phone_final');
+        } else if (trimmedInput === "Ask Another Question") {
+          addAssistantMessage("Sure! What else would you like to know?");
+          setCurrentStep('chat');
+        } else {
+          addAssistantMessage("To connect with our team, may I have your phone number?");
+          setCurrentStep('phone_final');
+        }
+        break;
+    }
+  };
+
+  const showSummary = () => {
+    addAssistantMessage("I've collected your details. Please click below to send your request to our team on WhatsApp for confirmation.", undefined, 'summary');
+    setCurrentStep('summary');
+    
+    // 10-second reminder timer
+    setTimeout(() => {
+      setHasSentToWhatsApp(current => {
+        if (!current) {
+          addAssistantMessage(`Hi **${leadData.name}**, I noticed you haven't sent your request yet. Would you like to chat with our team on WhatsApp now?`, ["Chat on WhatsApp", "Call Now", "Ask Another Question"]);
+        }
+        return current;
+      });
+    }, 10000);
+  };
+
+  const handleWhatsAppSend = () => {
+    setHasSentToWhatsApp(true);
+    const message = `Hello, I visited your website and spoke with the assistant.
+My details:
+Name: ${leadData.name}
+Phone: ${leadData.phone}
+Service Needed: ${leadData.problem}
+Urgency: ${leadData.urgency}
+Budget Range: ${leadData.budget}
+Preferred Appointment Date: ${leadData.bookingDate || 'N/A'}
+Preferred Time: ${leadData.bookingTime || 'N/A'}
+Please guide me further.`;
+
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
+
   if (!isOpen) return null;
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
-      animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
-      className="fixed bottom-24 right-6 z-[100] w-[380px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col"
-      style={{ maxHeight: '80vh' }}
-    >
-      <div className="bg-primary p-6 text-white shrink-0">
-        <div className="flex justify-between items-start mb-4">
-          <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-            <MessageCircle size={24} />
-          </div>
-          <button onClick={() => setIsOpen(false)} className="hover:bg-white/10 p-2 rounded-full transition-colors">
-            <X size={20} />
-          </button>
-        </div>
-        <div>
-          <h3 className="font-bold text-lg">Sharath Dental Assistant</h3>
-          <p className="text-xs opacity-80">Online | Expert Dental Guidance</p>
-        </div>
-      </div>
-      
-      <div className="flex-grow overflow-y-auto p-6 space-y-4">
-        {step === 'name' ? (
-          <div className="space-y-4">
-            <p className="text-slate-600 text-sm leading-relaxed">
-              Hello! I'm your virtual assistant. To provide you with personalized help, may I know your name?
-            </p>
-            <form onSubmit={(e) => { e.preventDefault(); if(userName.trim()) setStep('chat'); }} className="space-y-3">
-              <input 
-                type="text" 
-                required
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                placeholder="Enter your name..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-              />
-              <button type="submit" className="w-full bg-primary text-white py-3 rounded-2xl font-bold text-sm hover:bg-secondary transition-all shadow-lg shadow-primary/20">
-                Start Chatting
-              </button>
-            </form>
-          </div>
-        ) : (
-          <>
-            <div className="bg-slate-100 rounded-2xl rounded-tl-none p-4 text-sm text-slate-700 max-w-[85%]">
-              Hi <strong>{userName}</strong>! How can I help you with your dental care today?
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ opacity: 0, y: 100, scale: 0.8 }}
+          animate={{ 
+            opacity: 1, 
+            y: 0, 
+            scale: 1,
+            height: isMinimized ? '80px' : '600px',
+            width: isMinimized ? '280px' : '400px'
+          }}
+          exit={{ opacity: 0, y: 100, scale: 0.8 }}
+          className="fixed bottom-6 right-6 z-[100] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col transition-all duration-300"
+        >
+          {/* Header */}
+          <div className="bg-primary p-6 text-white flex justify-between items-center shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                <MessageCircle size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm">Sharath Dental Reception</h3>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                  <p className="text-[10px] opacity-80">Always Online</p>
+                </div>
+              </div>
             </div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setIsMinimized(!isMinimized)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                {isMinimized ? <ChevronRight size={20} className="-rotate-90" /> : <ChevronRight size={20} className="rotate-90" />}
+              </button>
+              <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+          </div>
 
-            {query && (
-              <div className="bg-primary/10 rounded-2xl rounded-tr-none p-4 text-sm text-slate-900 max-w-[85%] ml-auto">
-                {query}
+          {!isMinimized && (
+            <>
+              {/* Chat Area */}
+              <div 
+                ref={chatContainerRef}
+                className="flex-grow overflow-y-auto p-6 space-y-4 bg-slate-50/50"
+              >
+                {messages.map((msg) => (
+                  <div key={msg.id} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                    <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${
+                      msg.role === 'user' 
+                        ? 'bg-primary text-white rounded-tr-none shadow-lg shadow-primary/10' 
+                        : 'bg-white text-slate-700 rounded-tl-none shadow-sm border border-slate-100'
+                    }`}>
+                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    </div>
+                    
+                    {msg.options && (
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {msg.options.map((opt: string) => (
+                          <button
+                            key={opt}
+                            onClick={() => {
+                              if (opt === 'Call Now' || opt === 'Call Our Reception') {
+                                window.location.href = `tel:${PHONE_NUMBER}`;
+                              } else if (opt === 'WhatsApp Now' || opt === 'Chat on WhatsApp') {
+                                handleWhatsAppSend();
+                              } else if (opt === 'Ask Another Question') {
+                                setCurrentStep('chat');
+                                addAssistantMessage("Sure! What else would you like to know?");
+                              } else {
+                                handleStepLogic(opt);
+                              }
+                            }}
+                            className="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold hover:border-primary hover:text-primary transition-all shadow-sm"
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {currentStep === 'summary' && msg.content.includes("collected your details") && (
+                      <div className="w-full mt-4">
+                        <button 
+                          onClick={handleWhatsAppSend}
+                          className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/20 hover:scale-[1.02] transition-transform"
+                        >
+                          <MessageCircle size={20} /> Send My Request to WhatsApp
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {isLoading && (
+                  <div className="flex gap-2 items-center text-primary text-xs font-bold">
+                    <div className="flex gap-1">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" />
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.4s]" />
+                    </div>
+                    Receptionist is typing...
+                  </div>
+                )}
               </div>
-            )}
 
-            {isLoading && (
-              <div className="flex gap-2 items-center text-primary text-xs font-bold animate-pulse">
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.2s]" />
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.4s]" />
-                Assistant is typing...
-              </div>
-            )}
-
-            {response && (
-              <div className="space-y-4">
-                <div className="bg-slate-100 rounded-2xl rounded-tl-none p-4 text-sm text-slate-700 leading-relaxed prose prose-sm max-w-none">
-                  <ReactMarkdown>{response}</ReactMarkdown>
-                </div>
-                
-                <div className="bg-primary rounded-2xl p-6 text-white shadow-xl shadow-primary/20">
-                  <p className="text-xs font-bold uppercase mb-4 tracking-wider opacity-90 text-center">Final Step: Send to Hospital</p>
-                  <a 
-                    href={`https://wa.me/${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(`Hi, I am ${userName}. \n\nMy Question: "${query}" \n\nAssistant Answered: "${response.substring(0, 300)}..."`)}`}
-                    target="_blank"
-                    className="w-full bg-white text-primary py-4 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all flex items-center justify-center gap-3 shadow-lg"
-                  >
-                    <MessageCircle size={20} className="text-emerald-500" /> 
-                    Send Question to WhatsApp
-                  </a>
-                  <p className="text-[10px] mt-4 text-center opacity-70">
-                    Clicking above will send your query and the assistant's answer to our team for immediate follow-up.
-                  </p>
-                </div>
-
-                <div className="flex gap-2">
-                  <a 
-                    href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`}
-                    className="flex-1 border border-slate-200 text-slate-600 py-3 rounded-xl text-xs font-bold text-center hover:bg-slate-50 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <Phone size={14} /> Call Instead
-                  </a>
+              {/* Input Area */}
+              <div className="p-4 bg-white border-t border-slate-100 shrink-0">
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (inputValue.trim()) handleStepLogic(inputValue);
+                  }}
+                  className="flex gap-2"
+                >
+                  <input 
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder={currentStep === 'chat' ? "Ask a question..." : "Type your answer..."}
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                  />
                   <button 
-                    onClick={() => { setResponse(null); setQuery(''); }}
-                    className="flex-1 border border-slate-200 text-slate-600 py-3 rounded-xl text-xs font-bold text-center hover:bg-slate-50 transition-colors"
+                    type="submit"
+                    disabled={!inputValue.trim() || isLoading}
+                    className="bg-primary text-white p-3 rounded-xl hover:bg-secondary transition-colors disabled:opacity-50 shadow-lg shadow-primary/20"
                   >
-                    Ask Another
+                    <Send size={20} />
                   </button>
-                </div>
+                </form>
               </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {step === 'chat' && (
-        <div className="p-4 border-t border-slate-100 bg-slate-50 shrink-0">
-          <form onSubmit={handleAsk} className="flex gap-2">
-            <input 
-              type="text" 
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ask about services, prices..."
-              className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-            />
-            <button 
-              type="submit" 
-              disabled={isLoading || !query.trim()}
-              className="bg-primary text-white p-2.5 rounded-xl hover:bg-secondary transition-colors disabled:opacity-50"
-            >
-              <Send size={18} />
-            </button>
-          </form>
-        </div>
+            </>
+          )}
+        </motion.div>
       )}
-    </motion.div>
+    </AnimatePresence>
   );
 };
 
