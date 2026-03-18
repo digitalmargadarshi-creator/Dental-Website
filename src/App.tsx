@@ -43,7 +43,7 @@ const WelcomePopup = ({ setActivePage }: { setActivePage: (p: string) => void })
   const [hasSentToWhatsApp, setHasSentToWhatsApp] = useState(false);
   const chatContainerRef = React.useRef<HTMLDivElement>(null);
 
-  const BUSINESS_NAME = "Sharath Dental Implant clinic";
+  const BUSINESS_NAME = "Best Dentist in Vishakapatnam";
   const WHATSAPP_NUMBER = CONTACT_INFO.whatsapp;
   const PHONE_NUMBER = CONTACT_INFO.phone;
 
@@ -550,16 +550,16 @@ const MasterFAQPage = () => {
       const model = "gemini-flash-latest";
       
       const context = `
-        You are the virtual receptionist for Sharath Dental Implant clinic in Hyderabad.
+        You are the virtual receptionist for Best Dentist in Vishakapatnam.
         Answer the user's query politely and professionally. 
         Use BOLD for key information. 
         DO NOT use bullet points or '*' characters in your response. 
         If you list items, use plain numbers or just separate them with new lines.
         
         Hospital Info:
-        - Name: Sharath Dental Implant clinic
-        - Description: One of the best rated dental clinic in hyderbad. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more.
-        - Location: 8-2-13/2, Behind Big Bazaar, Opposite My Home Madhuban, Punjagutta, Hyderabad.
+        - Name: Best Dentist in Vishakapatnam
+        - Description: One of the best rated dental clinic in Vishakapatnam. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more.
+        - Location: Siripuram, Vishakapatnam.
         - Services: Teeth whitening (₹7,500), Teeth cleaning (₹1,000-2,500), Zirconia cap (₹7,500), DMLS Cap (₹5,500-6,500), Root Canal (₹2,500-4,500), Dental Implant (₹20,000-25,000).
         - Timings: Mon-Fri: 9 AM - 8 PM | Sat: 10 AM - 6 PM | Sun: Closed (Emergency only).
         - Contact: ${CONTACT_INFO.phone}, WhatsApp: ${CONTACT_INFO.whatsapp}

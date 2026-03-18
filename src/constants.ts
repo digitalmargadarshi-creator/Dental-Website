@@ -68,17 +68,17 @@ export const REVIEWS = [
     date: "4 days ago",
     rating: 5,
     link: "https://maps.app.goo.gl/BtQ92mZ1zJWHDmESA",
-    ownerReply: "Thank you Clifford for your kind words! We are glad you had a smooth experience with us at Sharath Dental Implant clinic. Our team always strives to provide a comfortable environment for our patients."
+    ownerReply: "Thank you Clifford for your kind words! We are glad you had a smooth experience with us at Best Dentist in Vishakapatnam. Our team always strives to provide a comfortable environment for our patients."
   },
   {
     id: 2,
     name: "Gerard Ainsworth",
     avatar: "https://ui-avatars.com/api/?name=Gerard+Ainsworth&background=7c3aed&color=fff",
-    content: "Absolutely brilliant! Great friendly service. Took the time to explain things and go through all the options. The treatment was painless and the results are fantastic. Best dentist in Hyderabad. I've visited many clinics but Sharath Dental stands out for its hygiene and expertise.",
+    content: "Absolutely brilliant! Great friendly service. Took the time to explain things and go through all the options. The treatment was painless and the results are fantastic. Best dentist in Vishakapatnam. I've visited many clinics but this clinic stands out for its hygiene and expertise.",
     date: "1 month ago",
     rating: 5,
     link: "https://maps.app.goo.gl/DCXcic1c3ob1AtUM6",
-    ownerReply: "Hello Gerard, thank you for taking the time to write this positive review for Sharath Dental Implant clinic. We are always pleased to receive good feedback and are happy you liked our hygienic standards."
+    ownerReply: "Hello Gerard, thank you for taking the time to write this positive review for Best Dentist in Vishakapatnam. We are always pleased to receive good feedback and are happy you liked our hygienic standards."
   },
   {
     id: 3,
@@ -114,7 +114,7 @@ export const REVIEWS = [
     id: 6,
     name: "Ravi Teja",
     avatar: "https://ui-avatars.com/api/?name=Ravi+Teja&background=059669&color=fff",
-    content: "Best dental clinic in Punjagutta. Modern equipment and very clean environment. 5 stars for the amazing smile makeover! The digital X-rays and intraoral cameras really helped me understand my dental health better.",
+    content: "Best dental clinic in Vishakapatnam. Modern equipment and very clean environment. 5 stars for the amazing smile makeover! The digital X-rays and intraoral cameras really helped me understand my dental health better.",
     date: "4 months ago",
     rating: 5,
     link: "https://maps.app.goo.gl/XUtCXikLSDbWesqq9",
@@ -150,31 +150,31 @@ export const INSTAGRAM_REELS = [
 ];
 
 export const CONTACT_INFO = {
-  phone: "+91 6305879 507",
-  whatsapp: "916305879507",
+  phone: "+91 81794 17894",
+  whatsapp: "918179417894",
   email: "kiran.tuni@gmail.com",
-  address: "8-2-13/2, Behind Big Bazaar, Opposite My Home Madhuban above aquaden aquarium shop srinagar colony Main road, Nagarjuna Nagar Colony Yellareddy Guda, Punjagutta, Hyderabad, Telangana 500073",
-  mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.716885161514!2d78.4518294!3d17.425369299999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa854eecb89a5b4a1%3A0x38602ec548ca0f43!2sKiran%20The%20Marketer!5e0!3m2!1sen!2sin!4v1772710148655!5m2!1sen!2sin"
+  address: "D.No. 10-50-14/1, Main Road, Siripuram, Vishakapatnam, Andhra Pradesh 530003",
+  mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3800.234567890123!2d83.3123456!3d17.7123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a39432109876543%3A0x1234567890abcdef!2sSiripuram%2C%20Visakhapatnam!5e0!3m2!1sen!2sin!4v1772710148655!5m2!1sen!2sin"
 };
 
 export const PAGE_FAQS = {
   home: [
-    { q: "What services do you offer?", a: "Sharath Dental Implant clinic is one of the best rated dental clinic in hyderbad. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more." },
+    { q: "What services do you offer?", a: "Best Dentist in Vishakapatnam is one of the best rated dental clinic in Vishakapatnam. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more." },
     { q: "Are you open on weekends?", a: "Yes, we are open on Saturdays from 10:00 AM to 6:00 PM. We are closed on Sundays except for pre-booked emergencies." },
-    { q: "How can I book an appointment?", a: "You can book an appointment by calling us at +91 6305879 507, messaging us on WhatsApp, or using the 'Book Appointment' button on our website." },
-    { q: "Do you offer painless dentistry?", a: "Absolutely! Sharath Dental specializes in painless treatments using modern techniques and advanced anesthesia to ensure your comfort." },
-    { q: "Where is the hospital located?", a: "We are located at 8-2-13/2, Behind Big Bazaar, Opposite My Home Madhuban, Punjagutta, Hyderabad." },
+    { q: "How can I book an appointment?", a: "You can book an appointment by calling us at +91 81794 17894, messaging us on WhatsApp, or using the 'Book Appointment' button on our website." },
+    { q: "Do you offer painless dentistry?", a: "Absolutely! We specialize in painless treatments using modern techniques and advanced anesthesia to ensure your comfort." },
+    { q: "Where is the hospital located?", a: "We are located at Siripuram, Vishakapatnam." },
     { q: "Is there parking available?", a: "Yes, we have dedicated parking space for our patients in the building premises." },
     { q: "Do you accept insurance?", a: "We work with several major dental insurance providers. Please contact our front desk to verify your specific plan." }
   ],
   about: [
-    { q: "Who is the lead dentist?", a: "Our lead dentist at Sharath Dental Implant clinic has over 15 years of experience in advanced dentistry and a passion for patient care." },
-    { q: "How long has the hospital been operating?", a: "Sharath Dental Implant clinic has been serving the Hyderabad community for over a decade with excellence." },
+    { q: "Who is the lead dentist?", a: "Our lead dentist at Best Dentist in Vishakapatnam has over 15 years of experience in advanced dentistry and a passion for patient care." },
+    { q: "How long has the hospital been operating?", a: "Best Dentist in Vishakapatnam has been serving the Vishakapatnam community for over a decade with excellence." },
     { q: "What is your mission?", a: "Our mission is to provide high-quality, accessible, and painless dental care to every patient who walks through our doors." },
     { q: "Are your doctors certified?", a: "Yes, all our specialists are highly qualified, board-certified, and regularly updated with the latest dental advancements." },
     { q: "What technology do you use?", a: "We use state-of-the-art technology including digital X-rays, intraoral cameras, and laser dentistry tools." },
     { q: "Do you handle international patients?", a: "Yes, we have a dedicated protocol for international patients, including virtual consultations and travel assistance." },
-    { q: "What makes you different?", a: "Sharath Dental is one of the best rated dental clinic in hyderbad. Our commitment to 'Painless Dentistry' and our patient-first approach sets us apart." }
+    { q: "What makes you different?", a: "Best Dentist in Vishakapatnam is one of the best rated dental clinic in Vishakapatnam. Our commitment to 'Painless Dentistry' and our patient-first approach sets us apart." }
   ],
   services: [
     { q: "What is general dentistry?", a: "General dentistry covers routine checkups, cleanings, fillings, and preventive care to maintain your overall oral health." },
@@ -196,8 +196,8 @@ export const PAGE_FAQS = {
   ],
   contact: [
     { q: "What are your working hours?", a: "We are open Monday to Friday from 9:00 AM to 8:00 PM, and Saturdays from 10:00 AM to 6:00 PM." },
-    { q: "How do I reach you via public transport?", a: "The Punjagutta Metro Station is just a 5-minute walk from our clinic. Several bus lines also stop nearby." },
-    { q: "Can I book via WhatsApp?", a: "Yes! You can message us at +91 6305879 507 for quick bookings and queries." },
+    { q: "How do I reach you via public transport?", a: "Several bus lines stop nearby our clinic in Siripuram." },
+    { q: "Can I book via WhatsApp?", a: "Yes! You can message us at +91 81794 17894 for quick bookings and queries." },
     { q: "What is your response time for emails?", a: "We typically respond to all email inquiries within 2-4 business hours." },
     { q: "Do I need an appointment for emergencies?", a: "While we prefer appointments, we prioritize walk-in emergencies to provide immediate relief." },
     { q: "What is your cancellation policy?", a: "We request at least 24 hours notice for cancellations so we can offer the slot to another patient." },
@@ -209,9 +209,9 @@ export const MASTER_FAQS = [
   {
     category: "About the Business",
     items: [
-      { q: "What is the history of Sharath Dental Implant clinic?", a: "Sharath Dental Implant clinic is one of the best rated dental clinic in hyderbad. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more." },
-      { q: "Is the hospital government-recognized?", a: "Yes, we are a fully licensed and registered dental hospital under the Telangana State Health Department." },
-      { q: "Do you have multiple branches?", a: "Currently, we operate from our main state-of-the-art facility in Punjagutta to ensure the highest quality control and direct supervision." }
+      { q: "What is the history of Best Dentist in Vishakapatnam?", a: "Best Dentist in Vishakapatnam is one of the best rated dental clinic in Vishakapatnam. Provides all kind of dental treatments painless root canal, laser gum surgery, dental implants, invisalign provider, smile makeover, teeth whitening, teeth braces, zirconium crowns, DMLS, wisdom tooth removal and many more." },
+      { q: "Is the hospital government-recognized?", a: "Yes, we are a fully licensed and registered dental hospital under the Andhra Pradesh State Health Department." },
+      { q: "Do you have multiple branches?", a: "Currently, we operate from our main state-of-the-art facility in Siripuram to ensure the highest quality control and direct supervision." }
     ]
   },
   {
@@ -227,7 +227,7 @@ export const MASTER_FAQS = [
     items: [
       { q: "What are the exact timings?", a: "Mon-Fri: 9 AM - 8 PM | Sat: 10 AM - 6 PM | Sun: Closed (Emergency only)." },
       { q: "How early should I arrive?", a: "We recommend arriving 10-15 minutes before your scheduled time to complete any necessary paperwork." },
-      { q: "Do you offer virtual consultations?", a: "Yes, for patients living outside Hyderabad or those needing a second opinion, we offer video consultations." }
+      { q: "Do you offer virtual consultations?", a: "Yes, for patients living outside Vishakapatnam or those needing a second opinion, we offer video consultations." }
     ]
   },
   {
